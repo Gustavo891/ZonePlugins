@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ZonePlugins.iml" filepath="$PROJECT_DIR$/.idea/ZonePlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneSkills.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneSkills.main.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,9 @@
+name: ZoneMines
+version: '1.0'
+main: org.gustaav.zoneMines.ZoneMines
+api-version: '1.21'
+depend:
+  - Multiverse-Core
+  - Vault
+  - Citizens
+  - EssentialEconomy

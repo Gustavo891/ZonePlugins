@@ -1,0 +1,7 @@
+name: ZoneSkills
+version: '1.0'
+main: org.gustaav.zoneSkills.ZoneSkills
+api-version: '1.21'
+depend:
+  - Vault
+  - EssentialEconomy
