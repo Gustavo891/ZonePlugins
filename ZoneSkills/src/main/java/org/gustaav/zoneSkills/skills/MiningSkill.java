@@ -1,4 +1,4 @@
-package org.gustaav.zoneSkills;
+package org.gustaav.zoneSkills.skills;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,7 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.gustaav.zoneSkills.PlayerDataManager;
+import org.gustaav.zoneSkills.Database.PlayerDataManager;
+import org.gustaav.zoneSkills.rewards.RewardModel;
 import org.gustaav.zoneSkills.ZoneSkills;
 
 import java.util.HashMap;

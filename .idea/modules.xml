@@ -6,6 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ZonePlugins.iml" filepath="$PROJECT_DIR$/.idea/ZonePlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneSkills.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneSkills.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneEssential.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneMines.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneSkills.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneSkills.main.iml" />
     </modules>
   </component>
 </project>

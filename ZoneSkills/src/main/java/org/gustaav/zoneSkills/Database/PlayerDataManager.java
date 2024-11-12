@@ -1,8 +1,6 @@
-package org.gustaav.zoneSkills;
+package org.gustaav.zoneSkills.Database;
 
 import org.bson.Document;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 

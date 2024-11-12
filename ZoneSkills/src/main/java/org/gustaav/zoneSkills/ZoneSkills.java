@@ -1,6 +1,10 @@
 package org.gustaav.zoneSkills;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.gustaav.zoneSkills.Database.MongoManager;
+import org.gustaav.zoneSkills.Database.PlayerDataManager;
+import org.gustaav.zoneSkills.listeners.PlayerListener;
+import org.gustaav.zoneSkills.skills.MiningSkill;
 
 public final class ZoneSkills extends JavaPlugin {
 
