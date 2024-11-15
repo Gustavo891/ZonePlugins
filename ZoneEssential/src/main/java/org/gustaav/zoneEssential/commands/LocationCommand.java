@@ -32,7 +32,7 @@ public class LocationCommand extends Command {
             String warpName = args[0].toLowerCase();
             Location warpLocation = locationManager.getWarpLocation(warpName);
             if (warpLocation != null) {
-                if(!player.hasPermission("nerdzone.warp." + warpName.toLowerCase())) {
+                if(!player.hasPermission("zoneessential.warp." + warpName.toLowerCase())) {
                     player.sendMessage("§cSem permissão.");
                 }
                 player.teleport(warpLocation);
@@ -41,7 +41,7 @@ public class LocationCommand extends Command {
                 player.sendMessage(ChatColor.RED + "O local " + warpName + " não existe.");
             }
         } else if (args.length == 2) {
-            if(!player.hasPermission("nerdzone.admin")) {
+            if(!player.hasPermission("zoneessential.admin")) {
                 player.sendMessage("§cSem permissão.");
             }
             if(args[0].equalsIgnoreCase("set")) {

@@ -3,6 +3,7 @@ package org.gustaav.zoneSkills.Database;
 import org.bson.Document;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.gustaav.zoneSkills.skills.SkillType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,9 +12,9 @@ import java.util.UUID;
 public class PlayerDataManager {
 
     private final MongoManager mongoManager;
-    private static final double XP_MULTIPLIER = 1.2;
+    private static final double XP_MULTIPLIER = 1.1;
 
-    private final Map<UUID, Document> playerCache = new HashMap<>();
+    private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
 
     public PlayerDataManager(JavaPlugin plugin, MongoManager mongoManager) {
         this.mongoManager = mongoManager;
@@ -27,62 +28,92 @@ public class PlayerDataManager {
     }
 
     public void loadPlayerData(UUID uuid) {
-        Document playerData = mongoManager.getPlayerData(uuid);
-        playerCache.put(uuid, playerData);
-    }
+        Document document = mongoManager.getPlayerData(uuid);
+        PlayerData playerData = new PlayerData(uuid);
 
-    public void unloadPlayerData(UUID uuid) {
-        Document playerData = playerCache.remove(uuid);
-        if (playerData != null) {
-            mongoManager.updatePlayerData(uuid, playerData);
+        Document skills = (Document) document.get("skills");
+        for (String skillName : skills.keySet()) {
+            Document skillData = (Document) skills.get(skillName);
+            int level = skillData.getInteger("level");
+            int xp = skillData.getInteger("xp");
+
+            playerData.setSkillData(SkillType.valueOf(skillName), level, xp);
         }
+
+        playerDataMap.put(uuid, playerData);
     }
 
-    public Document getSkillData(UUID uuid, String skillName) {
-        Document playerData = getPlayerData(uuid);
-        Document skills = (Document) playerData.get("skills");
-        return (Document) skills.getOrDefault(skillName, new Document("level", 1).append("xp", 0.0));
+    public int getTotalLevel(UUID uuid) {
+        int value = 0;
+        for(SkillType skillType : SkillType.values()) {
+            value += getLevel(uuid, skillType);
+        }
+        return value;
     }
 
-    private Document getPlayerData(UUID uuid) {
-        return playerCache.computeIfAbsent(uuid, id -> mongoManager.getPlayerData(uuid));
+    public SkillData getSkillData(UUID uuid, SkillType skillName) {
+        PlayerData playerData = playerDataMap.get(uuid);
+        if (playerData != null) {
+            return playerData.getSkillData(skillName);
+        }
+        return new SkillData(1, 0); // Retorna um novo SkillData caso não encontre
     }
 
-    public boolean addXp(UUID uuid, String skillName, double xp) {
-        Document playerData = getPlayerData(uuid);
-        Document skills = (Document) playerData.get("skills");
+    public PlayerData getPlayerData(UUID uuid) {
+        return playerDataMap.computeIfAbsent(uuid, id -> {
+            loadPlayerData(uuid);
+            return getPlayerData(uuid);
+        });
+    }
 
-        Document skillData = (Document) skills.getOrDefault(skillName, new Document("level", 1).append("xp", 0.0));
-        skills.put(skillName, skillData);
+    public boolean addXp(UUID uuid, SkillType skillName, double xp) {
+        PlayerData playerData = playerDataMap.get(uuid);
 
-        double currentXp = skillData.getDouble("xp");
-        skillData.put("xp", currentXp + xp);
+        if (playerData == null)
+            return false;
 
-        int level = skillData.getInteger("level");
+        SkillData skillData = playerData.getSkillData(skillName);
+
+        double currentXp = skillData.getXp();
+        skillData.setXp((int) (currentXp + xp));
+
+        int level = skillData.getLevel();
         double xpRequired = getXpRequiredForLevel(level);
 
         if (currentXp + xp >= xpRequired) {
-            levelUp(uuid, skillName, skillData);
+            levelUp(uuid, skillName);
             return true;
         }
         return false;
     }
 
-    private void levelUp(UUID uuid, String skillName, Document skillData) {
-        int currentLevel = skillData.getInteger("level");
-        skillData.put("level", currentLevel + 1);
-        skillData.put("xp", 0.0);
 
+    private void levelUp(UUID uuid, SkillType skillName) {
+        PlayerData playerData = playerDataMap.get(uuid);
+        if (playerData != null) {
+            SkillData skillData = playerData.getSkillData(skillName);
+            skillData.setLevel(skillData.getLevel() + 1);
+            skillData.setXp(0); // Reset XP após level up
+        }
     }
 
-    public int getLevel(UUID uuid, String skillName) {
-        Document skillData = getSkillData(uuid, skillName);
-        return skillData.getInteger("level");
+    public int getLevel(UUID uuid, SkillType skillName) {
+        PlayerData playerData = playerDataMap.get(uuid);
+        SkillData skillData = playerData != null ? playerData.getSkillData(skillName) : new SkillData(1, 0);
+        return skillData.getLevel();
     }
 
-    public double getXp(UUID uuid, String skillName) {
-        Document skillData = getSkillData(uuid, skillName);
-        return skillData.getDouble("xp");
+    public void setLevel(UUID uuid, SkillType skillName, int level) {
+        PlayerData playerData = playerDataMap.get(uuid);
+        SkillData skillData = playerData.getSkillData(skillName);
+        skillData.setLevel(level);
+        skillData.setXp(0);
+    }
+
+    public double getXp(UUID uuid, SkillType skillName) {
+        PlayerData playerData = playerDataMap.get(uuid);
+        SkillData skillData = playerData != null ? playerData.getSkillData(skillName) : new SkillData(1, 0);
+        return skillData.getXp();
     }
 
     public double getXpRequiredForLevel(int level) {
@@ -90,8 +121,33 @@ public class PlayerDataManager {
     }
 
     private void saveAllData() {
-        for (Map.Entry<UUID, Document> entry : playerCache.entrySet()) {
-            mongoManager.updatePlayerData(entry.getKey(), entry.getValue());
+        for (Map.Entry<UUID, PlayerData> entry : playerDataMap.entrySet()) {
+            UUID uuid = entry.getKey();
+            PlayerData playerData = entry.getValue();
+
+            saveData(uuid, playerData);
         }
+    }
+
+    public void unloadPlayerData(UUID uuid) {
+        PlayerData playerData = playerDataMap.remove(uuid);
+        if (playerData != null) {
+            // Converte PlayerData para Document e salva no MongoDB no formato desejado
+            saveData(uuid, playerData);
+        }
+    }
+
+    private void saveData(UUID uuid, PlayerData playerData) {
+        Document skills = new Document();
+        for (Map.Entry<SkillType, SkillData> entry : playerData.getAllSkills().entrySet()) {
+            SkillType skillName = entry.getKey();
+            SkillData skillData = entry.getValue();
+            skills.put(skillName.toString(), new Document("level", skillData.getLevel())
+                    .append("xp", skillData.getXp()));
+        }
+        Document document = new Document("uuid", playerData.getUuid().toString())
+                .append("skills", skills);
+
+        mongoManager.updatePlayerData(uuid, document);
     }
 }

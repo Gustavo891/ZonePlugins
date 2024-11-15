@@ -1,5 +1,6 @@
 package org.gustaav.zoneSkills.skills;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
@@ -14,7 +15,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.gustaav.zoneSkills.Database.PlayerDataManager;
 import org.gustaav.zoneSkills.rewards.RewardModel;
 import org.gustaav.zoneSkills.ZoneSkills;
+import org.gustaav.zoneSkills.utils.RandomUtil;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -43,17 +46,16 @@ public class MiningSkill implements Listener {
         double exp = getExpForBlock(event.getBlock().getType());
         if (exp <= 0) return;  // Ignora blocos sem XP
 
-        String skillName = "mining";
-        boolean levelUp = playerDataManager.addXp(uuid, skillName, exp);
+        boolean levelUp = playerDataManager.addXp(uuid, SkillType.mining, exp);
 
         // Obtém o nível e XP atual do jogador para a skill
-        int level = playerDataManager.getLevel(uuid, skillName);
-        double xp = playerDataManager.getXp(uuid, skillName);
+        int level = playerDataManager.getLevel(uuid, SkillType.mining);
+        double xp = playerDataManager.getXp(uuid, SkillType.mining);
         double xpRequired = playerDataManager.getXpRequiredForLevel(level);
 
         // Atualiza ou cria a BossBar para o jogador
         BossBar bossBar = playerBossBars.computeIfAbsent(uuid, id -> createBossBar(player));
-        bossBar.setTitle("§aMineração §l" + level + "§r §7(" + (int) xp + "/" + (int) xpRequired + "§7 XP)");
+        bossBar.setTitle("§aMineração §l" + level + "§r §7(" + RandomUtil.format((int) xp) + "/" + RandomUtil.format((int) xpRequired) + "§7 XP)");
         bossBar.setProgress(Math.min(xp / xpRequired, 1.0));
 
         playerMiningStartTime.put(uuid, System.currentTimeMillis());
@@ -65,14 +67,30 @@ public class MiningSkill implements Listener {
         scheduleBossBarRemoval(uuid);
     }
 
-    public void levelUp(Player player   ) {
-        int level = playerDataManager.getLevel(player.getUniqueId(), "mining");
+    public void levelUp(Player player) {
+        int level = playerDataManager.getLevel(player.getUniqueId(), SkillType.mining);
 
         player.sendMessage("");
-        player.sendMessage("  §8§n" + (level-1) + "§7 ➡ §f" + level);
-        player.sendMessage("  §aNovo nível de mineração desbloqueado.");
+        player.sendMessage(ChatColor.of(new Color(0x4eff03)) + "  §lMineração §7[§m" + (level-1) + "§r§8 ➡ §7" + level + "]");
+        player.sendMessage("  §fNível evoluido com sucesso.");
         player.sendMessage("  ");
 
+        if(level == 20) {
+            player.sendMessage("     §7Recompensas:");
+            player.sendMessage("     §8❒ §fComando " + ChatColor.of(new Color(0x70ff45)) + "/compactar §fliberado.");
+            player.sendMessage("§r");
+            plugin.getPermissions().playerAdd(player, "zonemines.compactar");
+        } else if (level == 50) {
+            player.sendMessage("     §7Recompensas:");
+            player.sendMessage("     §8❒ §fComando " + ChatColor.of(new Color(0x70ff45)) + "/vender §fliberado.");
+            player.sendMessage("§r");
+            plugin.getPermissions().playerAdd(player, "zonemines.vender");
+        } else if (level == 100) {
+            player.sendMessage("     §7Recompensas:");
+            player.sendMessage("     §8❒ §fComando " + ChatColor.of(new Color(0x70ff45)) + "/autovender §fliberado.");
+            player.sendMessage("§r");
+            plugin.getPermissions().playerAdd(player, "zonemines.autovender");
+        }
 
     }
 
@@ -114,9 +132,4 @@ public class MiningSkill implements Listener {
         removeBossBar(uuid);
     }
 
-    // pegar as recompensas de acordo com o nível do jogador
-    public RewardModel getRewards(int level) {
-        return null;
-
-    }
 }

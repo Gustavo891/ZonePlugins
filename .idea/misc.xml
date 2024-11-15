@@ -6,6 +6,7 @@
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/Essential Economy" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneEssential" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMine" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMines" />

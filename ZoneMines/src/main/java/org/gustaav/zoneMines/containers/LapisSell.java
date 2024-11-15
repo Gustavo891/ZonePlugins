@@ -29,13 +29,16 @@ public class LapisSell {
     private final ChestGui inventory;
     private final Player player;
 
+    SellModule sellModule;
 
-    public LapisSell(Player player) {
+    public LapisSell(Player player, SellModule sellModule) {
         this.inventory = new ChestGui(3, "Venda dos Minerios:");
         this.player = player;
 
         inventory.setOnGlobalClick(e -> {
             e.setCancelled(true);});
+
+        this.sellModule = sellModule;
 
     }
 
@@ -114,7 +117,7 @@ public class LapisSell {
                 .mapToInt(ItemStack::getAmount)
                 .sum();
 
-        for(SellModel module : SellModule.getSellList()) {
+        for(SellModel module : sellModule.getSellList()) {
             if(module.getItem().getType() == item.getType()) {
                 float valorTotal = total * module.getValue();
                 player.getInventory().remove(module.getItem().getType());

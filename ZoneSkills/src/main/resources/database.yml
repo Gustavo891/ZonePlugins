@@ -1,0 +1,6 @@
+mongodb:
+  host: ""
+  user: ""
+  password: ""
+  database: "server"
+  collection: "playerData"

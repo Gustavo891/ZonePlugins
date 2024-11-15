@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -158,7 +159,7 @@ public class LapisManager implements Listener {
         }.runTaskLater(zoneMines, 60);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBreak(BlockBreakEvent e) {
         Player player = e.getPlayer();
         if(e.getBlock().getLocation().getWorld() == Bukkit.getWorld("minas")) {
@@ -170,6 +171,7 @@ public class LapisManager implements Listener {
                 for (ItemStack drop : drops) {
                     player.getInventory().addItem(drop);  // Adiciona o item ao inventário
                 }
+                e.setCancelled(false);
                 player.giveExp(e.getExpToDrop());
                 e.setExpToDrop(0);
                 e.setDropItems(false);

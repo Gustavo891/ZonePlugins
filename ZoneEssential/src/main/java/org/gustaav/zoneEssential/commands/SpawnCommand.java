@@ -30,7 +30,7 @@ public class SpawnCommand extends Command {
 
         if(args.length == 1) {
             locationManager.setSpawnLocation(player.getLocation());
-            if(!player.hasPermission("nerdzone.setspawn")) {
+            if(!player.hasPermission("zoneessential.setspawn")) {
                 player.sendMessage("§cSem permissão.");
             }
             player.sendMessage(ChatColor.GREEN + "Local de spawn definido com sucesso!");
