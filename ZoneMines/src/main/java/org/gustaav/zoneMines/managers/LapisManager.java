@@ -15,19 +15,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
+import org.gustaav.zoneEnchants.EnchantAPI;
 import org.gustaav.zoneMines.ZoneMines;
 import org.gustaav.zoneMines.modules.Cuboid;
+import org.gustaav.zoneMines.modules.SellModel;
+import org.gustaav.zoneMines.modules.SellModule;
+import org.gustaav.zoneMines.utils.MessageUtil;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LapisManager implements Listener {
 
     // Mina Lápis Lazuli
+    private SellModule sellModule;
     private BukkitRunnable resetTimerTask;
     private final NamespacedKey DisplayNamespace;
     ZoneMines zoneMines;
@@ -39,8 +42,9 @@ public class LapisManager implements Listener {
     private final int resetTime = 300;  // 5 minutos (em segundos)
     private int resetTimeRemaining = resetTime; // Contagem regressiva para o reset
 
-    public LapisManager(ZoneMines zoneMines) {
+    public LapisManager(ZoneMines zoneMines, SellModule sellModule) {
         this.zoneMines = zoneMines;
+        this.sellModule = sellModule;
         this.spawnMine = new Location(Bukkit.getWorld("minas"), 107.5, 86, 69.5);
         this.DisplayNamespace = new NamespacedKey(zoneMines, "textdisplay");
         this.lapis = new Cuboid(
@@ -48,6 +52,9 @@ public class LapisManager implements Listener {
                 new Location(Bukkit.getWorld("minas"), 92, 57, 46));
     }
 
+    public Cuboid getCuboid() {
+        return lapis;
+    }
 
     public void reset() {
         progress = 100;  // Reseta o progresso para 100%
@@ -104,11 +111,15 @@ public class LapisManager implements Listener {
     private String generateText() {
         String timeLeft = formatTime(resetTimeRemaining);
         return "\n" +
-                ChatColor.of(new java.awt.Color(0x73ff8c)) + "§lÁrea de Mineração§r\n" +
+                ChatColor.of(new java.awt.Color(0xFF90FC)) + "§lÁrea de Mineração§r\n" +
                 "\n" +
-                "     §fTem §7" + Objects.requireNonNull(Bukkit.getWorld("minas")).getPlayers().size() + " §fpessoa(s) minerando.     \n" +
+                "     §fTem §7" + getPlayers() + " §fpessoa(s) minerando.     \n" +
                 "§fProgresso: §b" + barraProgresso() + "\n\n" +
                 "§fA mina irá resetar em §7" + timeLeft + "\n";
+    }
+
+    public int getPlayers() {
+        return Objects.requireNonNull(Bukkit.getWorld("minas")).getPlayers().size();
     }
 
     private String formatTime(int seconds) {
@@ -167,6 +178,44 @@ public class LapisManager implements Listener {
                 if(player.getGameMode().equals(GameMode.CREATIVE)) {
                     return;
                 }
+
+                ItemStack itemInHand = player.getInventory().getItemInMainHand();
+                int explosivoLevel = EnchantAPI.getInstance().getEnchantLevel(itemInHand, "explosivo");
+
+                if(explosivoLevel > 0) {
+                    double chance = ThreadLocalRandom.current().nextDouble(1, 100);
+
+                    if(chance < ((double) explosivoLevel)) {
+                        int radius = explosivoLevel + 1;
+                        int totalBlocos = 0;
+                        Location location = e.getBlock().getLocation();
+                        for (int x = -radius; x <= radius; x++) {
+                            for (int y = -radius; y <= radius; y++) {
+                                for (int z = -radius; z <= radius; z++) {
+                                    double distance = Math.sqrt(x * x + y * y + z * z);
+                                    if (distance <= radius) {
+                                        Block block = location.clone().add(x, y, z).getBlock();
+                                        if (lapis.contains(block.getLocation())) {
+                                            totalBlocos++;
+                                            List<ItemStack> drops = block.getDrops().stream().toList();
+                                            for (ItemStack drop : drops) {
+                                                player.getInventory().addItem(drop);
+                                                player.giveExp(e.getExpToDrop());
+                                            }
+                                            block.setType(Material.AIR);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        location.getWorld().spawnParticle(Particle.EXPLOSION, location, radius);
+                        location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0F, 1.0F);
+                        MessageUtil.sendFormattedMessage(player, String.format(
+                                "<#AA3000><b>Explosão </b><dark_gray>✦ <white>Quebrou um total de <#AA680D>%s <white>blocos."
+                                , SellModule.format(totalBlocos)));
+                    }
+                }
+
                 List<ItemStack> drops = e.getBlock().getDrops(player.getInventory().getItemInMainHand()).stream().toList();
                 for (ItemStack drop : drops) {
                     player.getInventory().addItem(drop);  // Adiciona o item ao inventário
@@ -185,9 +234,7 @@ public class LapisManager implements Listener {
         }
     }
 
-
     public double checkProgress() {
-
 
         double totalBlocos = lapis.getBlocks().size();
         double airCount = lapis.getBlocks().stream()
@@ -198,7 +245,6 @@ public class LapisManager implements Listener {
 
     }
 
-
     public String barraProgresso() {
         int barrasTotais = 10;
 
@@ -208,11 +254,10 @@ public class LapisManager implements Listener {
         int barrasPreenchidas = (int) (percentual / 100 * barrasTotais);
         int barrasVazias = barrasTotais - barrasPreenchidas;
 
-        return "§2" + "⬛".repeat(Math.max(0, barrasPreenchidas)) +
+        return "§5" + "⬛".repeat(Math.max(0, barrasPreenchidas)) +
                 "§8" +
                 "⬛".repeat(Math.max(0, barrasVazias)) +
                 " §7" + (int) percentual + "%";
     }
-
 
 }

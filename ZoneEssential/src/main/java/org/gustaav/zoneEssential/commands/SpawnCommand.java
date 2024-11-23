@@ -5,45 +5,64 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.gustaav.zoneEssential.manager.LocationManager;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Named;
 
-public class SpawnCommand extends Command {
+import static org.gustaav.zoneEssential.utils.MessageUtil.sendFormattedMessage;
+
+@Command("spawn")
+public class SpawnCommand {
 
     private final LocationManager locationManager;
 
     public SpawnCommand(LocationManager locationManager) {
-        super(
-                "spawn",
-                "Ir para o spawn",
-                "§cUse /spawn.",
-                new String[]{},
-                ""
-        );
         this.locationManager = locationManager;
     }
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
+    @Command("spawn")
+    public void goSpawn(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Apenas jogadores podem usar este comando.");
             return;
         }
-
-        if(args.length == 1) {
-            locationManager.setSpawnLocation(player.getLocation());
-            if(!player.hasPermission("zoneessential.setspawn")) {
-                player.sendMessage("§cSem permissão.");
-            }
-            player.sendMessage(ChatColor.GREEN + "Local de spawn definido com sucesso!");
-            return;
+        Location spawnLocation = locationManager.getSpawnLocation();
+        if (spawnLocation != null) {
+            player.teleport(spawnLocation);
+            sendFormattedMessage(player, "${Colors.PURPLE_LIGHT}Você foi enviado para o spawn.");
         } else {
-            Location spawnLocation = locationManager.getSpawnLocation();
-            if (spawnLocation != null) {
-                player.teleport(spawnLocation);
-                player.sendMessage(ChatColor.GREEN + "Você foi teleportado para o spawn!");
-            } else {
-                player.sendMessage(ChatColor.RED + "O local de spawn não está definido.");
-            }
+            sendFormattedMessage(player, "${Colors.RED_NORMAL}O local de spawn ainda não foi definido");
         }
+
+    }
+
+    @Command("spawn set")
+    public void setSpawn(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            return;
+        }
+        locationManager.setSpawnLocation(player.getLocation());
+        sendFormattedMessage(player, "${Colors.PURPLE_NORMAL}O local de spawn foi definido para sua localização.");
+    }
+
+    @Command("spawn <jogador>")
+    public void sendPlayer(CommandSender sender, @Named("jogador") Player target) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Apenas jogadores podem usar este comando.");
+            return;
+        }
+        if(target == null || !target.isOnline()) {
+            sendFormattedMessage(player, "${Colors.RED_NORMAL}O jogador não foi encontrado.");
+            return;
+        }
+        Location spawnLocation = locationManager.getSpawnLocation();
+        if (spawnLocation != null) {
+            target.teleport(spawnLocation);
+            sendFormattedMessage(target, "${Colors.PURPLE_LIGHT}Você foi enviado para o spawn.");
+            sendFormattedMessage(player, "${Colors.PURPLE_LIGHT}Você enviou o jogador ${Colors.WHITE}" + target.getName() + "${Colors.PURPLE_LIGHT} para o spawn.");
+        } else {
+            sendFormattedMessage(player, "${Colors.RED_NORMAL}O local de spawn ainda não foi definido");
+        }
+
     }
 
 }

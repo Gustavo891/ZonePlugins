@@ -4,11 +4,38 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/Essential Economy" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Essential Boss" />
         <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/Essential Economy" />
+            <option value="$PROJECT_DIR$/Essential Boss" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZoneArmazem" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZoneArmazem" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZoneEconomy" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZoneEconomy" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZoneEnchants" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZoneEnchants" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -27,6 +54,51 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/ZoneMines" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZoneMonsters" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZoneMonsters" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZonePlots" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZonePlots" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZonePrivateMines" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZonePrivateMines" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZoneRanks" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZoneRanks" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ZoneShop" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ZoneShop" />
           </set>
         </option>
       </GradleProjectSettings>

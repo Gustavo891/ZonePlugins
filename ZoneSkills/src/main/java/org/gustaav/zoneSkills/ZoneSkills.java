@@ -6,9 +6,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.gustaav.zoneSkills.Database.MongoManager;
 import org.gustaav.zoneSkills.Database.PlayerDataManager;
 import org.gustaav.zoneSkills.commands.SkillAdminCommand;
+import org.gustaav.zoneSkills.commands.SkillTopCommand;
 import org.gustaav.zoneSkills.commands.SkillsCommand;
 import org.gustaav.zoneSkills.listeners.PlayerListener;
-import org.gustaav.zoneSkills.skills.MiningSkill;
+import org.gustaav.zoneSkills.skills.SkillRepository;
+import org.gustaav.zoneSkills.skills.list.MiningSkill;
 
 public final class ZoneSkills extends JavaPlugin {
 
@@ -17,7 +19,7 @@ public final class ZoneSkills extends JavaPlugin {
 
     private static Permission perms = null;
 
-    private MiningSkill miningSkill;
+    private SkillRepository skillRep;
 
     @Override
     public void onEnable() {
@@ -26,9 +28,9 @@ public final class ZoneSkills extends JavaPlugin {
         mongoManager = new MongoManager(this);
         playerDataManager = new PlayerDataManager(this, mongoManager);
 
-        miningSkill = new MiningSkill(this, playerDataManager);
+        skillRep = new SkillRepository(this, playerDataManager);
 
-        getServer().getPluginManager().registerEvents(miningSkill, this);
+        getServer().getPluginManager().registerEvents(skillRep.getMiningSkill(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(playerDataManager), this);
         getLogger().info("ZoneSkills habilitado!");
 
@@ -46,6 +48,7 @@ public final class ZoneSkills extends JavaPlugin {
     public void registerCommands() {
         new SkillAdminCommand(playerDataManager);
         new SkillsCommand(this);
+        new SkillTopCommand(this);
     }
 
     private void setupPermissions() {
@@ -59,7 +62,11 @@ public final class ZoneSkills extends JavaPlugin {
     }
 
     public MiningSkill getMiningSkill() {
-        return miningSkill;
+        return skillRep.getMiningSkill();
+    }
+
+    public SkillRepository getSkillRepository() {
+        return skillRep;
     }
 
     public Permission getPermissions() {

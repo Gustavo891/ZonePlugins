@@ -6,37 +6,48 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class FixCommand extends Command {
+import static org.gustaav.zoneEssential.utils.MessageUtil.sendFormattedMessage;
 
-    public FixCommand() {
-        super(
-                "reparar",
-                "Repare o item em sua mão",
-                "Use /reparar",
-                new String[]{"fix"},
-                "zoneessential.reparar"
-        );
-    }
+public class FixCommand {
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
+    @Command({"fix", "reparar"})
+    @CommandPermission("zoneessential.fix")
+    @Description("Repare a ferramenta do seu inventario")
+    public void fix(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             return;
         }
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
 
         if (!(itemInHand.getType().getMaxDurability() > 0)) {
-            player.sendMessage("§cVocê precisa segurar um item que possa ser reparado!");
+            sendFormattedMessage(player, "${Colors.RED}Você precisa segurar um item que possa ser reparado!");
             return;
         }
 
         if(itemInHand.getDurability() != 0) {
             itemInHand.setDurability((short) 0);
-            player.sendMessage("§aItem reparado com sucesso.");
+            sendFormattedMessage(player, "${Colors.GREEN}Item reparado com sucesso.");
         } else {
-            player.sendMessage("§cEsse item não pode ser reparado.");
+            sendFormattedMessage(player, "${Colors.RED}Esse item não pode ser reparado.");
         }
-
     }
+
+    @Command("fix *")
+    @CommandPermission("zoneessential.fix.inventory")
+    public void fixInventory(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            return;
+        }
+        for(ItemStack item : player.getInventory().getContents()) {
+            if(item.getType().getMaxDurability() > 0 && item.getDurability() != 0) {
+                item.setDurability((short) 0);
+            }
+        }
+        sendFormattedMessage(player, "${Colors.GREEN}Seu inventário foi reparado com sucesso.");
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.gustaav.zoneEssential.kits;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import java.io.*;
 import java.util.*;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
+
+import static org.gustaav.zoneEssential.manager.utils.formatTime;
 
 public class KitManager {
 
@@ -73,6 +76,8 @@ public class KitManager {
     }
 
 
+
+
     public void saveAllKits() {
         String kitsPath = "kits";
         kitsFile.set(kitsPath, null);
@@ -128,8 +133,21 @@ public class KitManager {
         savePlayersConfig();
     }
 
-    public long getKitCooldown(UUID playerUUID, String kitName) {
-        return playersConfig.getLong(playerUUID + ".kits." + kitName, 0);
+    public boolean getKitCooldown(UUID playerUUID, KitModel selectedKit, boolean callback) {
+
+        long lastUsed = playersConfig.getLong(playerUUID + ".kits." +  selectedKit.getKitType(), 0);
+        long cooldownTime = selectedKit.getDelay() * 1000L;
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUsed < cooldownTime) {
+            long remainingTime = cooldownTime - (currentTime - lastUsed);
+            String formattedTime = formatTime(remainingTime);
+            if(callback) {
+                Objects.requireNonNull(Bukkit.getPlayer(playerUUID)).sendMessage("§cVocê precisa esperar " + formattedTime + " para pegar esse kit novamente.");
+            }
+            return false;
+        }
+
+        return true;
     }
 
     // Salva o arquivo players.yml
@@ -157,22 +175,4 @@ public class KitManager {
     public List<KitModel> getKits() {
         return kits;
     }
-
-    public String formatTime(long millis) {
-        long weeks = TimeUnit.MILLISECONDS.toDays(millis) / 7;
-        long days = TimeUnit.MILLISECONDS.toDays(millis) % 7;
-        long hours = TimeUnit.MILLISECONDS.toHours(millis) % 24;
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
-
-        StringBuilder time = new StringBuilder();
-        if (weeks > 0) time.append(weeks).append("s ");
-        if (days > 0) time.append(days).append("d ");
-        if (hours > 0) time.append(hours).append("h ");
-        if (minutes > 0) time.append(minutes).append("m ");
-        if (seconds > 0) time.append(seconds).append("s");
-
-        return time.toString().trim();
-    }
-
 }

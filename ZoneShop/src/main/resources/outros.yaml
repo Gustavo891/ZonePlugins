@@ -1,0 +1,9 @@
+name_tag:
+  name: "Name Tag"
+  price: 30
+clock:
+  name: "Relógio"
+  price: 20
+book:
+  name: "Livro"
+  price: 10

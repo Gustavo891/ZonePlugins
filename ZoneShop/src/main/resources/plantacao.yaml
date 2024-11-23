@@ -1,0 +1,9 @@
+wheat_seeds:
+  name: "Semente de Trigo"
+  price: 2
+carrot:
+  name: "Cenoura"
+  price: 3
+potato:
+  name: "Batata"
+  price: 4

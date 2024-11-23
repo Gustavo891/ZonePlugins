@@ -2,10 +2,20 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EssentialEconomy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/EssentialEconomy.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EssentialBoss.main.iml" filepath="$PROJECT_DIR$/.idea/modules/EssentialBoss.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneArmazem.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneArmazem.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneArmazem.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneArmazem.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEconomy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEconomy.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEnchants.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEnchants.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMonsters.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMonsters.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZonePlots.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZonePlots.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZonePlots.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZonePlots.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ZonePlugins.iml" filepath="$PROJECT_DIR$/.idea/ZonePlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZonePrivateMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZonePrivateMines.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneRanks.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneRanks.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneShop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneShop.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneSkills.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneSkills.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneEssential.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.gustaav.ZoneMines.main.iml" />

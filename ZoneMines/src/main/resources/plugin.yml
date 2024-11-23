@@ -6,4 +6,5 @@ depend:
   - Multiverse-Core
   - Vault
   - Citizens
-  - EssentialEconomy
+  - ZoneEconomy
+  - ZoneEnchants

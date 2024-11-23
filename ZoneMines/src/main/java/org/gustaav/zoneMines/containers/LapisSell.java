@@ -10,12 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.gustaav.zoneMines.ZoneMines;
-import org.gustaav.zoneMines.commands.Sell.SellModel;
-import org.gustaav.zoneMines.commands.Sell.SellModule;
+import org.gustaav.zoneMines.modules.SellModel;
+import org.gustaav.zoneMines.modules.SellModule;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -61,7 +60,12 @@ public class LapisSell {
         meta.setDisplayName(ChatColor.of(new Color(0x50ff24)) + "Lapis Lazuli");
 
         List<String> lore = new ArrayList<>();
-        lore.add("§7Nenhum bônus encontrado.");
+        int bonus = checkBonus(player);
+        if(bonus > 0) {
+            lore.add("§7Bônus adicional de §f" + bonus + "%§7.");
+        } else {
+            lore.add("§7Nenhum bônus encontrado.");
+        }
         lore.add("§r");
         lore.add("§r §8❒ §fVenda p/drop: §2$§a" + lapisVenda + "   §r");
         lore.add("§r");
@@ -90,7 +94,12 @@ public class LapisSell {
         meta.setDisplayName(ChatColor.of(new Color(0x50ff24)) + "Minério de Lapis Lazuli");
 
         List<String> lore = new ArrayList<>();
-        lore.add("§7Nenhum bônus encontrado.");
+        int bonus = checkBonus(player);
+        if(bonus > 0) {
+            lore.add("§7Bônus adicional de §f" + bonus + "%§7.");
+        } else {
+            lore.add("§7Nenhum bônus encontrado.");
+        }
         lore.add("§r");
         lore.add("§r §8❒ §fVenda p/drop: §2$§a" + lapisOre + "   §r");
         lore.add("§r");
@@ -111,6 +120,20 @@ public class LapisSell {
 
     }
 
+    private int checkBonus(Player player) {
+        if(player.hasPermission("zoneranks.rank.ouro")) {
+            return 10;
+        } else if (player.hasPermission("zoneranks.rank.ferro")) {
+            return 7;
+        } else if (player.hasPermission("zoneranks.rank.carvao")) {
+            return 5;
+        } else if (player.hasPermission("zoneranks.rank.pedra")) {
+            return 0;
+        }
+        return 0;
+    }
+
+
     private void sellItem(ItemStack item) {
 
         int total = player.getInventory().all(item.getType()).values().stream()
@@ -119,10 +142,11 @@ public class LapisSell {
 
         for(SellModel module : sellModule.getSellList()) {
             if(module.getItem().getType() == item.getType()) {
-                float valorTotal = total * module.getValue();
+                float bonus = 1 + ((float) checkBonus(player) / 100);
+                float valorTotal = total * module.getValue() * bonus;
                 player.getInventory().remove(module.getItem().getType());
                 ZoneMines.getEconomy().depositPlayer(player, valorTotal);
-                player.sendMessage("§aVocê vendeu §7x" + SellModule.format(total) + " §f" + module.getTranslation() + " §apor §2$§f" + SellModule.format(valorTotal) + "§a.");
+                player.sendMessage("§aVocê vendeu §7x" + SellModule.format(total) + " §f" + module.getTranslation() + " §apor §2$§f" + SellModule.format(valorTotal) + "§a. §7[+" + checkBonus(player) + "%]");
                 updateMenu();
                 return;
             }
@@ -138,7 +162,12 @@ public class LapisSell {
         meta.setDisplayName(ChatColor.of(new Color(0x50ff24)) + "Bloco de Lapis Lazuli");
 
         List<String> lore = new ArrayList<>();
-        lore.add("§7Nenhum bônus encontrado.");
+        int bonus = checkBonus(player);
+        if(bonus > 0) {
+            lore.add("§7Bônus adicional de §f" + bonus + "%§7.");
+        } else {
+            lore.add("§7Nenhum bônus encontrado.");
+        }
         lore.add("§r");
         lore.add("§r §8❒ §fVenda p/drop: §2$§a" + lapisBlock + "   §r");
         lore.add("§r");
@@ -167,7 +196,12 @@ public class LapisSell {
         meta.setDisplayName(ChatColor.of(new Color(0x50ff24)) + "Diamante");
 
         List<String> lore = new ArrayList<>();
-        lore.add("§7Nenhum bônus encontrado.");
+        int bonus = checkBonus(player);
+        if(bonus > 0) {
+            lore.add("§7Bônus adicional de §f" + bonus + "%§7.");
+        } else {
+            lore.add("§7Nenhum bônus encontrado.");
+        }
         lore.add("§r");
         lore.add("§r §8❒ §fVenda p/drop: §2$§a" + diamanteVenda + "   §r");
         lore.add("§r");
@@ -196,7 +230,12 @@ public class LapisSell {
         meta.setDisplayName(ChatColor.of(new Color(0x50ff24)) + "Minério de Diamante");
 
         List<String> lore = new ArrayList<>();
-        lore.add("§7Nenhum bônus encontrado.");
+        int bonus = checkBonus(player);
+        if(bonus > 0) {
+            lore.add("§7Bônus adicional de §f" + bonus + "%§7.");
+        } else {
+            lore.add("§7Nenhum bônus encontrado.");
+        }
         lore.add("§r");
         lore.add("§r §8❒ §fVenda p/drop: §2$§a" + diamanteOre + "   §r");
         lore.add("§r");

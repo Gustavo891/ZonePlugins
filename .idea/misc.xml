@@ -6,10 +6,19 @@
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/Essential Boss" />
     <file type="web" url="file://$PROJECT_DIR$/Essential Economy" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneArmazem" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneEconomy" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneEnchants" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneEssential" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMine" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMines" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneMonsters" />
+    <file type="web" url="file://$PROJECT_DIR$/ZonePlots" />
+    <file type="web" url="file://$PROJECT_DIR$/ZonePrivateMines" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneRanks" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneShop" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneSkills" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="22" project-jdk-type="JavaSDK">

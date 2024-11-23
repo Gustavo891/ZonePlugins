@@ -10,10 +10,6 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven {
-        name = "spigotmc-repo"
-        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
-    }
-    maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
@@ -22,15 +18,27 @@ repositories {
         name = 'citizens-repo'
         url = 'https://maven.citizensnpcs.co/repo'
     }
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly 'io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT'
     implementation 'com.github.stefvanschie.inventoryframework:IF:0.10.15'
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') {
         exclude group: '*', module: '*'
     }
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    implementation 'io.github.revxrsal:lamp.common:4.0.0-beta.19'
+    implementation 'io.github.revxrsal:lamp.bukkit:4.0.0-beta.19'
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.12'
+    compileOnly fileTree("libs")
 }
 
 def targetJavaVersion = 21

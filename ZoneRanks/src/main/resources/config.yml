@@ -1,0 +1,45 @@
+rank_inicial: pedra3
+ultimo_rank: carvao1
+ranks:
+  pedra3:
+    nivel: 1
+    nome: "Pedra III"
+    prefix: "§7[PedraIII] "
+    custo: 0
+    commands:
+      - ""
+  pedra2:
+    nivel: 2
+    nome: "Pedra II"
+    prefix: "§7[PedraII] "
+    custo: 1000
+    commands:
+      - ""
+  pedra1:
+    nivel: 3
+    nome: "Pedra I"
+    prefix: "§7[PedraI] "
+    custo: 15000
+    commands:
+      - ""
+  carvao3:
+    nivel: 4
+    nome: "Carvão III"
+    prefix: "§8[Carvão III] "
+    custo: 45000
+    commands:
+      - ""
+  carvao2:
+    nivel: 5
+    nome: "Carvão II"
+    prefix: "§8[Carvão II] "
+    custo: 95000
+    commands:
+      - ""
+  carvao1:
+    nivel: 6
+    nome: "Carvão I"
+    prefix: "§8[Carvão I] "
+    custo: 150000
+    commands:
+      - ""

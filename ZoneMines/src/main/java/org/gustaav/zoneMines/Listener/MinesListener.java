@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.gustaav.zoneMines.commands.Sell.SellModule;
+import org.gustaav.zoneMines.modules.SellModule;
 import org.gustaav.zoneMines.containers.LapisSell;
 
 public class MinesListener implements Listener {

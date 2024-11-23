@@ -1,0 +1,9 @@
+torch:
+  name: "Torcha"
+  price: 1
+bucket:
+  name: "Balde"
+  price: 5
+compass:
+  name: "Bussóla"
+  price: 15

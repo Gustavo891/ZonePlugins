@@ -1,0 +1,9 @@
+iron_ore:
+  name: "Minério de Ferro"
+  price: 10
+stone:
+  name: "Pedra Lisa"
+  price: 5
+diamond_ore:
+  name: "Minério de Diamante"
+  price: 50

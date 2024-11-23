@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="ZonePlots.main" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="EssentialEconomy" target="17" />
+      <module name="EssentialEconomy.main" target="17" />
+      <module name="EssentialEconomy.test" target="17" />
+      <module name="ZoneEcoonomy.main" target="21" />
+      <module name="ZoneEcoonomy.test" target="21" />
       <module name="ZoneMine" target="21" />
       <module name="ZoneMine.main" target="21" />
       <module name="ZoneMine.test" target="21" />

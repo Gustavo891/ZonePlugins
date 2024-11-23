@@ -3,12 +3,21 @@ package org.gustaav.zoneMines;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.gustaav.zoneEnchants.EnchantAPI;
 import org.gustaav.zoneMines.Listener.MinesListener;
 import org.gustaav.zoneMines.commands.Sell.AutoSellCommand;
 import org.gustaav.zoneMines.commands.Sell.SellCommand;
-import org.gustaav.zoneMines.commands.Sell.SellModule;
+import org.gustaav.zoneMines.modules.SellModule;
 import org.gustaav.zoneMines.commands.compact.CompactCommand;
+import org.gustaav.zoneMines.commands.Explosivo;
+import org.gustaav.zoneMines.explosives.ExplosivoListener;
 import org.gustaav.zoneMines.managers.LapisManager;
+import org.gustaav.zoneMines.managers.PlaceholderAPI;
+import revxrsal.commands.Lamp;
+import revxrsal.commands.bukkit.BukkitLamp;
+import revxrsal.commands.bukkit.actor.BukkitCommandActor;
+
+import java.awt.*;
 
 public final class ZoneMines extends JavaPlugin {
 
@@ -19,20 +28,34 @@ public final class ZoneMines extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        EnchantAPI enchantAPI = EnchantAPI.getInstance();
+
         if (!setupEconomy() ) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+
         sellModule = new SellModule(this);
-        lapisManager = new LapisManager(this);
+        lapisManager = new LapisManager(this, sellModule);
         getServer().getPluginManager().registerEvents(lapisManager, this);
         getServer().getPluginManager().registerEvents(new MinesListener(sellModule), this);
 
-        new CompactCommand();
-        new SellCommand(sellModule);
-        new AutoSellCommand(sellModule);
+        Lamp<BukkitCommandActor> lamp = BukkitLamp.builder(this).build();
 
+        new PlaceholderAPI(lapisManager).register();
+
+        getServer().getPluginManager().registerEvents(new ExplosivoListener(this, lapisManager, sellModule), this);
+
+        lamp.register(new Explosivo());
+        lamp.register(new CompactCommand(this));
+        lamp.register(new SellCommand(sellModule));
+        lamp.register(new AutoSellCommand(sellModule));
+    }
+
+    public ZoneMines getZoneMines() {
+        return this;
     }
 
     private boolean setupEconomy() {

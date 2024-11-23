@@ -1,0 +1,9 @@
+iron_pickaxe:
+  name: "Picareta de Ferro"
+  price: 100
+diamond_sword:
+  name: "Espada de Diamante"
+  price: 200
+wooden_shovel:
+  name: "Pá de Madeira"
+  price: 20

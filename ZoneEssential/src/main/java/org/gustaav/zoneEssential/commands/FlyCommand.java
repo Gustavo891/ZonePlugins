@@ -2,31 +2,26 @@ package org.gustaav.zoneEssential.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class FlyCommand extends Command {
+import static org.gustaav.zoneEssential.utils.MessageUtil.sendFormattedMessage;
 
-    public FlyCommand() {
-        super(
-                "voar",
-                "Comando para voar.",
-                "Use /voar",
-                new String[]{"fly"},
-                "zoneessential.voar"
-        );
-    }
+public class FlyCommand {
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
+    @CommandPermission("zoneesential.fly")
+    @Command({"voar", "fly"})
+    public void execute(CommandSender sender) {
         if(!(sender instanceof Player player)) {return;}
 
         if(player.isFlying()) {
             player.setAllowFlight(false);
             player.setFlying(false);
-            player.sendMessage("§cVocê não está mais voando.");
+            sendFormattedMessage(player, "${Colors.RED}Você parou de voar.");
         } else {
             player.setAllowFlight(true);
             player.setFlying(true);
-            player.sendMessage("§eVocê começou a voar.");
+            sendFormattedMessage(player, "${Colors.GREEN}Você começou a voar.");
         }
 
     }

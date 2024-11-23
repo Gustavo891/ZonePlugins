@@ -27,6 +27,10 @@ public class PlayerDataManager {
         }.runTaskTimerAsynchronously(plugin, 0, 100L);
     }
 
+    public Map<UUID, PlayerData> getAllPlayerData() {
+        return new HashMap<>(playerDataMap);
+    }
+
     public void loadPlayerData(UUID uuid) {
         Document document = mongoManager.getPlayerData(uuid);
         PlayerData playerData = new PlayerData(uuid);
@@ -132,7 +136,6 @@ public class PlayerDataManager {
     public void unloadPlayerData(UUID uuid) {
         PlayerData playerData = playerDataMap.remove(uuid);
         if (playerData != null) {
-            // Converte PlayerData para Document e salva no MongoDB no formato desejado
             saveData(uuid, playerData);
         }
     }

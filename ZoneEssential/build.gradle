@@ -19,16 +19,25 @@ repositories {
         url = 'https://maven.citizensnpcs.co/repo'
     }
     maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-        content {
-            includeGroup 'org.bukkit'
-            includeGroup 'org.spigotmc'
-        }
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot:1.21.1-R0.1-SNAPSHOT")
+    compileOnly 'io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT'
+    implementation 'com.github.stefvanschie.inventoryframework:IF:0.10.18'
+    implementation 'io.github.revxrsal:lamp.common:4.0.0-beta.19'
+    implementation 'io.github.revxrsal:lamp.bukkit:4.0.0-beta.19'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+}
+
+compileJava {
+    // Preserve parameter names in the bytecode
+    options.compilerArgs += ["-parameters"]
 }
 
 def targetJavaVersion = 21

@@ -1,79 +1,111 @@
 package org.gustaav.zoneMines.commands.compact;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.gustaav.zoneMines.commands.Command;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.gustaav.zoneMines.ZoneMines;
+import org.gustaav.zoneMines.modules.CompactModel;
+import revxrsal.commands.annotation.Command;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class CompactCommand extends Command {
+public class CompactCommand {
 
-    // Lista de compactações disponíveis
+    private final List<UUID> compactList = new ArrayList<UUID>();
+
     private final List<CompactModel> list = Arrays.asList(
             new CompactModel(new ItemStack(Material.LAPIS_LAZULI), 9, new ItemStack(Material.LAPIS_BLOCK)),
             new CompactModel(new ItemStack(Material.DIAMOND), 9, new ItemStack(Material.DIAMOND_BLOCK))
     );
 
-    public CompactCommand() {
-        super(
-                "compactar",
-                "Compacte os itens de seu inventário",
-                "§cUse /compactar",
-                new String[]{"compact"},
-                "zonemines.compactar"
-        );
+    public CompactCommand(ZoneMines plugin) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for(UUID uuid : compactList) {
+                    Player player = Bukkit.getPlayer(uuid);
+                    assert player != null;
+                    compactPlayer(player);
+                }
+            }
+        }.runTaskTimer(plugin, 0, 100L);
     }
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
+    @Command({"autocompact", "autocompactar"})
+    public void autoCompact(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("§cEste comando só pode ser usado por jogadores.");
             return;
         }
+        if(!player.hasPermission("zonemines.autocompactar")) {
+            player.sendMessage("§cSem permissão.");
+        }
 
-        // Percorre o inventário do jogador
+        if(compactList.contains(player.getUniqueId())) {
+            player.sendMessage("§cVocê desativou o modo auto-compactar.");
+            compactList.remove(player.getUniqueId());
+        } else {
+            compactList.add(player.getUniqueId());
+            player.sendMessage("§aVocê ativou o modo auto-compactar.");
+        }
+
+    }
+
+    @Command({"compactar", "compact"})
+    public void compact(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cEste comando só pode ser usado por jogadores.");
+            return;
+        }
+        if(!player.hasPermission("zonemines.compactar")) {
+            player.sendMessage("§cSem permissão.");
+        }
+        compactPlayer(player);
+    }
+
+    private void compactPlayer(Player player) {
+        int compactable = 0;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null) { // Verifica se o item não é nulo
+            if (item != null) {
                 for (CompactModel model : list) {
-                    // Verifica se o item no inventário corresponde ao item base do modelo
                     if (isItemMatch(item, model.getBase())) {
-                        compactItem(player, item, model);
+                        if(compactItem(player, item, model)){
+                            compactable++;
+                        }
                     }
                 }
             }
         }
-
-        player.sendMessage("§aItens compactados com sucesso!");
+        if(compactable>0) {
+            player.sendMessage("§aItens compactados com sucesso!");
+        }
     }
 
-    // Método que verifica se o item no inventário corresponde ao item base
     private boolean isItemMatch(ItemStack item, ItemStack base) {
         return item.getType() == base.getType() && item.getDurability() == base.getDurability();
     }
 
-    // Método que realiza a compactação do item
-    private void compactItem(Player player, ItemStack item, CompactModel model) {
-        // Verifica se o item é de um tipo que pode ser compactado
+    private boolean compactItem(Player player, ItemStack item, CompactModel model) {
         if (item.getAmount() >= model.getRecipe()) {
-            int compactedAmount = item.getAmount() / model.getRecipe(); // Quantidade de itens compactados
-            int remainingAmount = item.getAmount() % model.getRecipe(); // Quantidade restante do item
+            int compactedAmount = item.getAmount() / model.getRecipe();
+            int remainingAmount = item.getAmount() % model.getRecipe();
 
-            // Cria o item compactado
             ItemStack compactedItem = model.getResult();
             compactedItem.setAmount(compactedAmount);
 
-            // Remove os itens originais e adiciona os itens compactados
             player.getInventory().removeItem(item);
             player.getInventory().addItem(compactedItem);
 
-            // Se ainda sobrou algum item, adiciona de volta ao inventário
             if (remainingAmount > 0) {
                 item.setAmount(remainingAmount);
                 player.getInventory().addItem(item);
+                return true;
             }
         }
+        return false;
     }
 }
