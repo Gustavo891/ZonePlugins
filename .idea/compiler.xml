@@ -11,6 +11,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="EssentialBoss" target="17" />
+      <module name="EssentialBoss.main" target="17" />
+      <module name="EssentialBoss.test" target="17" />
       <module name="EssentialEconomy" target="17" />
       <module name="EssentialEconomy.main" target="17" />
       <module name="EssentialEconomy.test" target="17" />

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EssentialBoss.main.iml" filepath="$PROJECT_DIR$/.idea/modules/EssentialBoss.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneArmazem.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneArmazem.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneArmazem.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneArmazem.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEconomy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEconomy.main.iml" />
