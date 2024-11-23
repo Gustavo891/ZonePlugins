@@ -14,6 +14,7 @@ import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.gustaav.zoneArmazem.ZoneArmazem;
 import org.gustaav.zoneArmazem.warehouse.PlotManager.Base;
+import org.gustaav.zoneArmazem.warehouse.listener.ArmazemSoldEvent;
 import org.gustaav.zoneArmazem.warehouse.models.DropModel;
 import org.gustaav.zoneArmazem.warehouse.models.WarehouseModel;
 
@@ -157,9 +158,12 @@ public class WarehouseGUI {
             if(!plot.getMode() || Objects.equals(plot.getPlotId().getOwner(), player.getUniqueId())) {
                 int quantidadeAtual = entry.getValue();
                 if (quantidadeAtual > 0) {
-                    ZoneArmazem.getEconomy().depositPlayer(player, quantidadeAtual * drop.getValue());
+                    double price = quantidadeAtual * drop.getValue();
+                    ZoneArmazem.getEconomy().depositPlayer(player, price);
                     player.sendMessage("§aVocê vendeu §7x" + Base.formatNumber(quantidadeAtual) + " §apor §2$§f" + Base.formatNumber(quantidadeAtual * drop.getValue()) + "§a.");
                     plot.removeDrop(entry.getKey());
+                    ArmazemSoldEvent event = new ArmazemSoldEvent(player, material, quantidadeAtual, price);
+                    Bukkit.getPluginManager().callEvent(event);
                     updateMenu();
                 } else {
                     player.sendMessage("§cVocê não possui nenhuma plantação para vender. Alguém já deve ter vendido!");
