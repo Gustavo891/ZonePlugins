@@ -29,12 +29,9 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String params) {
-        if (player == null) {
-            return "";
-        }
 
         return switch (params) {
-            case "normal_players" -> String.valueOf(lapisManager.getPlayers());
+            case "normal" -> String.valueOf(lapisManager.getPlayers());
             default -> null;
         };
     }

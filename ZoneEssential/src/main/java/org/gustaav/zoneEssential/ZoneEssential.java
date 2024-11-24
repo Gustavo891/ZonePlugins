@@ -24,6 +24,8 @@ public final class ZoneEssential extends JavaPlugin {
         LocationManager locationManager = new LocationManager(configManager);
         kitManager = new KitManager(this);
 
+
+
         lamp.register(new FixCommand());
         lamp.register(new GamemodeCommand());
         lamp.register(new FlyCommand());
@@ -31,8 +33,10 @@ public final class ZoneEssential extends JavaPlugin {
         lamp.register(new SpawnCommand(locationManager));
         lamp.register(new KitCommand(kitManager, this));
         lamp.register(new LuzCommand());
+        GenericEvents genericEvents = new GenericEvents(locationManager);
+        lamp.register(genericEvents);
 
-        getServer().getPluginManager().registerEvents(new GenericEvents(locationManager), this);
+        getServer().getPluginManager().registerEvents(genericEvents, this);
 
     }
 

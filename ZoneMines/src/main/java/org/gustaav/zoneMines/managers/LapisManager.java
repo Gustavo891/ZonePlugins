@@ -170,7 +170,7 @@ public class LapisManager implements Listener {
         }.runTaskLater(zoneMines, 60);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onBreak(BlockBreakEvent e) {
         Player player = e.getPlayer();
         if(e.getBlock().getLocation().getWorld() == Bukkit.getWorld("minas")) {

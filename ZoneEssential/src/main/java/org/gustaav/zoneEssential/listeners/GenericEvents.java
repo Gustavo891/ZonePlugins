@@ -1,5 +1,7 @@
 package org.gustaav.zoneEssential.listeners;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,6 +14,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.gustaav.zoneEssential.manager.LocationManager;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class GenericEvents implements Listener {
 
@@ -39,12 +47,30 @@ public class GenericEvents implements Listener {
         event.setDeathMessage(null);
     }
 
+    List<UUID> build = new ArrayList<UUID>();
+
+    @CommandPermission("zoneesential.build.admin")
+    @Command("build")
+    public void buildCommand(CommandSender sender) {
+        if(sender instanceof Player player) {
+            if(build.contains(player.getUniqueId())) {
+                build.remove(player.getUniqueId());
+                player.sendMessage("§cModo build desativado.");
+            } else {
+                build.add(player.getUniqueId());
+                player.sendMessage("§aModo build ativado.");
+            }
+        }
+    }
+
+
+
     @EventHandler(priority = EventPriority.LOW)
     public void onBlockBreak(BlockBreakEvent event) {
-        if(event.getPlayer().isOp()) {
+        if(build.contains(event.getPlayer().getUniqueId())) {
             return;
         }
-        if(event.getPlayer().getWorld() == manager.getSpawnLocation().getWorld()) {
+        if(event.getPlayer().getWorld() != Bukkit.getWorld("plots")) {
             event.setCancelled(true);
         }
     }

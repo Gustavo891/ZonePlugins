@@ -33,15 +33,18 @@ public class MinesGUI {
         ItemStack lapis = new ItemStack(Material.LAPIS_ORE);
         ItemMeta meta = lapis.getItemMeta();
         assert meta != null;
-        meta.setDisplayName("§eNormal");
+        meta.setDisplayName("§5Mina Normal");
         List<String> lore = new ArrayList<>();
+        lore.add("§7Se junte a todos jogadores, pegue sua");
+        lore.add("§7picareta, e começe a minerar agora.");
         lore.add("");
-        lore.add("§fAcesso rápido: §7/warp mina");
-        lore.add("§fJogadores: §7" + PlaceholderAPI.setPlaceholders(player, "zonemines_normal_players"));
+        lore.add("  §fAcesso rápido: §8/warp mina");
+        lore.add("  §fJogadores: §7" + PlaceholderAPI.setPlaceholders(player, "%zonemines_normal%"));
         lore.add("");
-        lore.add("§eClique para teleportar.");
+        lore.add("§dClique para teleportar.");
         meta.setLore(lore);
 
+        lapis.setItemMeta(meta);
         pane.addItem(new GuiItem(lapis, e -> {
             player.performCommand("warp mina");
         }), Slot.fromIndex(13));

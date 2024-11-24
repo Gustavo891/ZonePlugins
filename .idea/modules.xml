@@ -8,6 +8,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEnchants.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEnchants.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMissions.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMissions.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMissions.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMissions.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMonsters.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMonsters.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZonePlots.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZonePlots.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZonePlots.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZonePlots.test.iml" />
