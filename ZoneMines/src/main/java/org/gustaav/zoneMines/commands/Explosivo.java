@@ -76,7 +76,7 @@ public class Explosivo {
 
         ItemStack item = createExplosivo(tier, especialidade);
         if(!console) {
-            MessageUtil.sendFormattedMessage(target, String.format("${Colors.PURPLE_LIGHT}Você deu ${Colors.WHITE}Bomba Tier %s ✦ %s ${Colors.PURPLE_LIGHT}para o jogador ${Colors.WHITE}%s${Colors.PURPLE_LIGHT}.", tier, especialidade, target.getName()));
+            MessageUtil.sendFormattedMessage((Player) sender, String.format("${Colors.PURPLE_LIGHT}Você deu ${Colors.WHITE}Bomba Tier %s ✦ %s ${Colors.PURPLE_LIGHT}para o jogador ${Colors.WHITE}%s${Colors.PURPLE_LIGHT}.", tier, especialidade, target.getName()));
         }
         target.getInventory().addItem(item);
         return;

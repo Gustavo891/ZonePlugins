@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.gustaav.zoneEssential.ZoneEssential;
+import org.gustaav.zoneEssential.utils.ItemStackSerializer;
 
 import java.io.*;
 import java.util.*;
@@ -39,84 +40,60 @@ public class KitManager {
     }
 
     public void loadAllKits() {
-        kits.clear(); // Limpar lista existente de kits
-        String kitsPath = "kits";
+        kits.clear(); // Limpa a lista de kits antes de carregar
 
+        String kitsPath = "kits";
         if (kitsFile.contains(kitsPath)) {
             Set<String> kitNames = Objects.requireNonNull(kitsFile.getConfigurationSection(kitsPath)).getKeys(false);
 
             for (String kitType : kitNames) {
                 String path = kitsPath + "." + kitType;
+
+                // Carregar informações do kit
                 String name = kitsFile.getString(path + ".name");
                 int delay = kitsFile.getInt(path + ".delay");
 
                 List<ItemStack> items = new ArrayList<>();
 
-                // Obtenha os itens serializados e faça a verificação de tipo
+                // Verificar e carregar os itens serializados
                 Object serializedItemsObj = kitsFile.get(path + ".items");
                 if (serializedItemsObj instanceof List<?> rawList) {
-
-                    // Verifica se todos os elementos são mapas e faz o cast
+                    List<String> serializedItems = new ArrayList<>();
                     for (Object obj : rawList) {
-                        if (obj instanceof Map) {
-                            @SuppressWarnings("unchecked")
-                            Map<String, Object> serializedItem = (Map<String, Object>) obj;
-                            ItemStack item = deserializeItem(serializedItem);
-                            if (item != null) {
-                                items.add(item);
-                            }
+                        if (obj instanceof String) {
+                            serializedItems.add((String) obj);
                         }
                     }
+                    items = deserializeItems(serializedItems);
                 }
 
-                // Adicionar o kit carregado à lista de kits
+                // Adicionar o kit carregado à lista
                 kits.add(new KitModel(name, kitType, delay, items));
             }
         }
     }
 
-
-
-
     public void saveAllKits() {
         String kitsPath = "kits";
-        kitsFile.set(kitsPath, null);
+        kitsFile.set(kitsPath, null); // Limpa a seção dos kits antes de salvar
+
         for (KitModel kit : kits) {
             String path = kitsPath + "." + kit.getKitType();
 
+            // Salvar informações do kit
             kitsFile.set(path + ".name", kit.getKitName());
             kitsFile.set(path + ".delay", kit.getDelay());
 
-            List<Map<String, Object>> serializedItems = new ArrayList<>();
-
-            for (ItemStack item : kit.getListaItens()) {
-                Map<String, Object> serializedItem = serializeItem(item);
-                if (serializedItem != null) {
-                    serializedItems.add(serializedItem);
-                }
-            }
-
+            // Serializar os itens do kit para Base64
+            List<String> serializedItems = serializeItems(kit.getListaItens());
             kitsFile.set(path + ".items", serializedItems);
         }
-
         try {
-            kitsFile.save(kitsConfigFile);
+            kitsFile.save(kitsConfigFile); // Salva o arquivo kits.yml
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-    // Método para serializar os itens do kit em Base64
-    public Map<String, Object> serializeItem(ItemStack item) {
-        return item.serialize();
-    }
-
-    // Método para desserializar os itens do kit a partir do Base64
-    public ItemStack deserializeItem(Map<String, Object> itemData) {
-        return ItemStack.deserialize(itemData);
-    }
-
 
     public void addKit(KitModel kit) {
         kits.add(kit);
@@ -175,4 +152,29 @@ public class KitManager {
     public List<KitModel> getKits() {
         return kits;
     }
+
+    // Salvar os itens como Base64
+    public List<String> serializeItems(List<ItemStack> items) {
+        List<String> serializedItems = new ArrayList<>();
+        for (ItemStack item : items) {
+            String serializedItem = ItemStackSerializer.itemStackToString(item);
+            if (serializedItem != null) {
+                serializedItems.add(serializedItem);
+            }
+        }
+        return serializedItems;
+    }
+
+    // Desserializar os itens de Base64
+    public List<ItemStack> deserializeItems(List<String> serializedItems) {
+        List<ItemStack> items = new ArrayList<>();
+        for (String serializedItem : serializedItems) {
+            ItemStack item = ItemStackSerializer.stringToItemStack(serializedItem);
+            if (item != null) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
 }

@@ -1,25 +1,30 @@
 package org.gustaav.zoneArmazem.warehouse.gui;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import com.plotsquared.core.plot.Plot;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.gustaav.zoneArmazem.ZoneArmazem;
 import org.gustaav.zoneArmazem.warehouse.PlotManager.Base;
-import org.gustaav.zoneArmazem.warehouse.listener.ArmazemSoldEvent;
+import org.gustaav.zoneArmazem.warehouse.listener.ArmazemEvent;
 import org.gustaav.zoneArmazem.warehouse.models.DropModel;
 import org.gustaav.zoneArmazem.warehouse.models.WarehouseModel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class WarehouseGUI {
@@ -31,6 +36,11 @@ public class WarehouseGUI {
 
     public WarehouseGUI(Base base, Player player, WarehouseModel plot) {
         armazem = new ChestGui(5, String.format("Armazém [%s/%s]", base.getTotal(plot), base.getCapacidade(plot.getNivel())));
+
+        armazem.setOnGlobalClick(e -> {
+            e.setCancelled(true);
+        });
+
         this.base = base;
         this.player = player;
         this.plot = plot;
@@ -46,6 +56,12 @@ public class WarehouseGUI {
     }
 
     public void configNav(StaticPane nav) {
+        loadExit(nav);
+        loadPrivate(nav);
+        loadUpgrade(nav);
+
+    }
+    public void loadExit(StaticPane nav) {
         ItemStack sair = new ItemStack(Material.ARROW);
         ItemMeta sairMeta = sair.getItemMeta();
         assert sairMeta != null;
@@ -58,22 +74,15 @@ public class WarehouseGUI {
         });
 
         nav.addItem(sairGui, 0, 0);
-
-        PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
-        PlayerTextures textures = profile.getTextures();
+    }
+    public void loadPrivate(StaticPane nav) {
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
+        profile.setProperty(new ProfileProperty("textures", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGY5NWVlYWRiMGUyZGU0NWVmOTJjYThmOTQ1MmMwNWQyMGY3ZmQ3MDUxMWMwMjczNDQ0ZTg2ZDRkMTU0Y2VjOSJ9fX0="));
         ItemStack level1 = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta level1Meta = (SkullMeta) level1.getItemMeta();
-        URL urlObject;
-        try {
-            urlObject = new URL("https://textures.minecraft.net/texture/cbb632ceb83e2c39cb53e801a29af9109cf341df89d01ed8dfeb49460a5264c8");
-        } catch (MalformedURLException exception) {
-            level1.setType(Material.NETHER_STAR);
-            throw new RuntimeException("Invalid URL", exception);
-        }
-        textures.setSkin(urlObject);
+        level1Meta.setPlayerProfile(profile);
 
-        assert level1Meta != null;
-        level1Meta.setDisplayName("§6Modo Privado");
+        level1Meta.displayName(MiniMessage.miniMessage().deserialize("<gold>Modo Privado").decoration(TextDecoration.ITALIC, false));
         List<String> lores = new ArrayList<>();
         lores.add("§7Configure para apenas o dono do terreno");
         lores.add("§7conseguir vender os produtos do armazém.");
@@ -101,13 +110,60 @@ public class WarehouseGUI {
             event.setCancelled(true);
         });
 
-        nav.addItem(modoPrivate, 4, 0);
+        nav.addItem(modoPrivate, 3, 0);
         armazem.addPane(nav);
+    }
+    public void loadUpgrade(StaticPane nav) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
+        profile.setProperty(new ProfileProperty("textures", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzUxNTAyY2U5YzdlYWE1ZTA3M2I0ZTQ5YjcwYmU2NDg0MmFkZWZlMTJmYzE3ZDk2ZDM4ZTU2ZjYzZGIyOTNhZCJ9fX0="));
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        meta.setPlayerProfile(profile);
+        meta.displayName(MiniMessage.miniMessage().deserialize("<color:#acffab>Evoluir Armazenamento</color>").decoration(TextDecoration.ITALIC, false));
+
+        List<Component> lore = new ArrayList<>();
+        lore.add(Component.text("§7Aumente o limite que seu armazém"));
+        lore.add(Component.text("§7pode guardar suas plantações."));
+        lore.add(Component.text("§r"));
+        lore.add(Component.text("  §fNível: §7" + plot.getNivel()));
+        if(plot.getNivel() == base.getNivelLimite()) {
+            lore.add(Component.text("  §FUpgrade: §7Máximo."));
+            lore.add(Component.text("§r"));
+            lore.add(Component.text("§cVocê não possui mais níveis para evoluir."));
+        } else {
+            lore.add(Component.text(String.format("  §fUpgrade: §a§m%s§a ➟ %s", formatter.format(base.getCapacidade(plot.getNivel())), formatter.format(base.getCapacidade(plot.getNivel() + 1)))));
+            lore.add(Component.text("  §FCusto: §2$§f" + Base.formatNumber(base.getValue(plot.getNivel()))));
+            lore.add(Component.text("§r"));
+            if(ZoneArmazem.getEconomy().has(player, base.getValue(plot.getNivel()))) {
+                lore.add(Component.text("§7Clique para evoluir o seu armazém"));
+            } else {
+                lore.add(Component.text("§cVocê não possui dinheiro suficiente."));
+            }
+        }
+        meta.lore(lore);
+        item.setItemMeta(meta);
+
+        nav.addItem(new GuiItem(item, e -> {
+            if(plot.getNivel() < base.getNivelLimite()) {
+                double value = base.getValue(plot.getNivel());
+                if(ZoneArmazem.getEconomy().has(player, value)) {
+                    ZoneArmazem.getEconomy().withdrawPlayer(player, value);
+                    plot.setNivel(plot.getNivel() + 1);
+                    player.sendMessage(String.format("§aArmazém evoluído com sucesso. §7[%s ➟ %s]", base.getCapacidade(plot.getNivel() - 1), base.getCapacidade(plot.getNivel())));
+                    player.closeInventory();
+                } else {
+                    player.closeInventory();
+                    player.sendMessage("§cSaldo insuficiente.");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F);
+                }
+            }
+        }), 5, 0);
 
     }
 
     public void loadProducts(StaticPane painel) {
-        painel.clear(); // Limpar o painel antes de recarregar os itens
+        painel.clear();
         if (plot.getDrops().isEmpty()) {
             GuiItem item = loadEmpty();
             painel.addItem(item, 3, 0);
@@ -140,8 +196,6 @@ public class WarehouseGUI {
         lores.add("  §fValor total: §2$§f" + Base.formatNumber(total));
         lores.add("");
         if(plot.getMode()) {
-            Bukkit.broadcastMessage("ownerId: " + plot.getPlotId().getOwner());
-            Bukkit.broadcastMessage("playerId: " + player.getUniqueId());
             if(Objects.equals(plot.getPlotId().getOwner(), player.getUniqueId())) {
                 lores.add("§eClique para vender.");
             } else {
@@ -162,7 +216,7 @@ public class WarehouseGUI {
                     ZoneArmazem.getEconomy().depositPlayer(player, price);
                     player.sendMessage("§aVocê vendeu §7x" + Base.formatNumber(quantidadeAtual) + " §apor §2$§f" + Base.formatNumber(quantidadeAtual * drop.getValue()) + "§a.");
                     plot.removeDrop(entry.getKey());
-                    ArmazemSoldEvent event = new ArmazemSoldEvent(player, material, quantidadeAtual, price);
+                    ArmazemEvent event = new ArmazemEvent(player, material, quantidadeAtual, price);
                     Bukkit.getPluginManager().callEvent(event);
                     updateMenu();
                 } else {

@@ -4,9 +4,11 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneArmazem.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneArmazem.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneArmazem.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneArmazem.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneBoosters.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneBoosters.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEconomy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEconomy.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEnchants.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEnchants.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneEssential.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneLobby.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneLobby.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMines.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMissions.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMissions.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ZoneMissions.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ZoneMissions.test.iml" />

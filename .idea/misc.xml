@@ -4,14 +4,21 @@
     <option name="show" value="ASK" />
     <option name="description" value="" />
   </component>
+  <component name="EntryPointsManager">
+    <writeAnnotations>
+      <writeAnnotation name="lombok.Getter" />
+    </writeAnnotations>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/Essential Boss" />
     <file type="web" url="file://$PROJECT_DIR$/Essential Economy" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneArmazem" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneBoosters" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneEconomy" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneEnchants" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneEssential" />
+    <file type="web" url="file://$PROJECT_DIR$/ZoneLobby" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMine" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMines" />
     <file type="web" url="file://$PROJECT_DIR$/ZoneMissions" />

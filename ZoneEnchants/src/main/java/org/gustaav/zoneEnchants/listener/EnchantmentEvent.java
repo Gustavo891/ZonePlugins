@@ -7,9 +7,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.gustaav.zoneEnchants.enchantment.EnchantConfig;
 import org.gustaav.zoneEnchants.view.EnchantGUI;
 
 public class EnchantmentEvent implements Listener {
+
+    EnchantConfig enchantConfig;
+
+    public EnchantmentEvent(EnchantConfig enchantConfig) {
+        this.enchantConfig = enchantConfig;
+    }
+
 
     @EventHandler
     public void enchantingTable(PlayerInteractEvent event) {
@@ -20,7 +28,8 @@ public class EnchantmentEvent implements Listener {
         }
 
         event.setCancelled(true);
-        EnchantGUI enchantGUI = new EnchantGUI(player);
+        EnchantGUI enchantGUI = new EnchantGUI(player, enchantConfig);
+        enchantGUI.loadGui();
     }
 
 

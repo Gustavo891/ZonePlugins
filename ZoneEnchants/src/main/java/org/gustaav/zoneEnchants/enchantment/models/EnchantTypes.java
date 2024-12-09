@@ -1,4 +1,4 @@
-package org.gustaav.zoneEnchants.enchantment;
+package org.gustaav.zoneEnchants.enchantment.models;
 
 public enum EnchantTypes {
 

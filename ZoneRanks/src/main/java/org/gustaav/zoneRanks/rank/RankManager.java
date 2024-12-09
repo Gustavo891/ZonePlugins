@@ -1,5 +1,6 @@
 package org.gustaav.zoneRanks.rank;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.gustaav.zoneRanks.ZoneRanks;
@@ -9,14 +10,18 @@ import java.util.*;
 
 public class RankManager {
 
+    @Getter
     private final Map<String, RankModel> ranks = new HashMap<>();
     private final Map<UUID, RankModel> playerRanks = new HashMap<>();
     private final MongoManager mongoManager;
     private final String rankInicial;
+    @Getter
+    private final String ultimoRank;
 
-    public RankManager(MongoManager mongoManager, String rankInicial) {
+    public RankManager(MongoManager mongoManager, String rankInicial, String ultimoRank) {
         this.mongoManager = mongoManager;
         this.rankInicial = rankInicial;
+        this.ultimoRank = ultimoRank;
     }
 
     /**

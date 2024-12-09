@@ -1,11 +1,13 @@
 package org.gustaav.zoneEssential;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.gustaav.zoneEssential.commands.*;
 import org.gustaav.zoneEssential.listeners.GenericEvents;
 import org.gustaav.zoneEssential.manager.ConfigManager;
 import org.gustaav.zoneEssential.kits.KitManager;
 import org.gustaav.zoneEssential.manager.LocationManager;
+import org.gustaav.zoneEssential.scoreboard.Scoreboard;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -24,7 +26,9 @@ public final class ZoneEssential extends JavaPlugin {
         LocationManager locationManager = new LocationManager(configManager);
         kitManager = new KitManager(this);
 
+        Scoreboard scoreboard = new Scoreboard(this);
 
+        getServer().getPluginManager().registerEvents(scoreboard, this);
 
         lamp.register(new FixCommand());
         lamp.register(new GamemodeCommand());
@@ -33,6 +37,7 @@ public final class ZoneEssential extends JavaPlugin {
         lamp.register(new SpawnCommand(locationManager));
         lamp.register(new KitCommand(kitManager, this));
         lamp.register(new LuzCommand());
+        lamp.register(new DisplayCommand(this));
         GenericEvents genericEvents = new GenericEvents(locationManager);
         lamp.register(genericEvents);
 

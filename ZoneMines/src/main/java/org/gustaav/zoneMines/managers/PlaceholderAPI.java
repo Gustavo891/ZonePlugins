@@ -2,6 +2,7 @@ package org.gustaav.zoneMines.managers;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
+import org.gustaav.zoneMines.managers.classic.LapisManager;
 import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPI extends PlaceholderExpansion {

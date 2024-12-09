@@ -11,11 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.gustaav.zoneEnchants.commands.GiveBookCommand;
 import org.gustaav.zoneEnchants.enchantment.CustomEnchants.CustomManager;
 import org.gustaav.zoneEnchants.enchantment.EnchantConfig;
-import org.gustaav.zoneEnchants.enchantment.EnchantModel;
-import org.gustaav.zoneEnchants.enchantment.EnchantTypes;
+import org.gustaav.zoneEnchants.enchantment.models.EnchantModel;
+import org.gustaav.zoneEnchants.enchantment.models.EnchantTypes;
 
 public class BookApplyListener implements Listener {
 
@@ -24,8 +23,11 @@ public class BookApplyListener implements Listener {
     private final NamespacedKey enchantKey = new NamespacedKey("enchantmentbook", "custom_enchant");
     private final NamespacedKey allowedItemsKey = new NamespacedKey("enchantmentbook", "allowed_items");
 
-    public BookApplyListener(CustomManager customManager) {
+    EnchantConfig enchantConfig;
+
+    public BookApplyListener(CustomManager customManager, EnchantConfig enchantConfig) {
         this.customManager = customManager;
+        this.enchantConfig = enchantConfig;
     }
 
     @EventHandler
@@ -51,7 +53,7 @@ public class BookApplyListener implements Listener {
             int level = Integer.parseInt(data[1]);
 
             EnchantModel model = null;
-            for(EnchantModel enchant : EnchantConfig.getEnchantments()) {
+            for(EnchantModel enchant : enchantConfig.getEnchantments()) {
                 if(enchant.getId().equalsIgnoreCase(enchantment)) {
                     model = enchant;
                 }
@@ -74,7 +76,7 @@ public class BookApplyListener implements Listener {
                             player.sendMessage("§cLivro já está no nível máximo.");
                             return;
                         }
-                        ItemStack newBook = EnchantConfig.giveBook(enchantment, level+1);
+                        ItemStack newBook = enchantConfig.giveBook(enchantment, level+1);
                         if(newBook != null) {
                             event.getWhoClicked().setItemOnCursor(null);
                             target.setAmount(target.getAmount() - 1);

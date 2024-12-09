@@ -64,10 +64,49 @@ public class MissionCreator {
             )
     );
 
+    MissionModel mission03 = new MissionModel(
+            "Fazendeiro Aprendiz",
+            "§7Começe a plantar suas primeiras\n§7sementes em sua farm.",
+            "mission03",
+            List.of(
+                    new TaskModel(
+                            "melancia01",
+                            "Plante sementes de melancia.",
+                            128,
+                            TaskTypes.PLACE_BLOCKS,
+                            null,
+                            Material.MELON_STEM
+                    )
+            ),
+            List.of(
+                    new RewardModel("§2$§F100.000", "money add %player% 100000 -c")
+            )
+    );
+
+    MissionModel mission04 = new MissionModel(
+            "Primeira Colheita",
+            "§7Venda os recursos que sua\n§7primeira plantação rendeu.",
+            "mission04",
+            List.of(
+                    new TaskModel(
+                            "melancia01",
+                            "Venda suas melancias.",
+                            512,
+                            TaskTypes.ARMAZEM_SELL,
+                            null,
+                            Material.MELON_SLICE
+                    )
+            ),
+            List.of(
+                    new RewardModel("§2$§F250.000", "money add %player% 250000 -c")
+            )
+    );
 
     public MissionCreator() {
         missions.add(mission01);
         missions.add(mission02);
+        missions.add(mission03);
+        missions.add(mission04);
     }
 
 

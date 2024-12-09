@@ -15,15 +15,28 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.gustaav.zoneEnchants.EnchantAPI;
+import org.gustaav.zoneMonsters.ZoneMonsters;
+import org.gustaav.zoneMonsters.damage.hologram.CreateHologramTask;
+import org.gustaav.zoneMonsters.damage.hologram.HologramManager;
+import org.gustaav.zoneMonsters.damage.vector.VectorGenerator;
 import org.gustaav.zoneMonsters.manager.MonsterManager;
 import org.gustaav.zoneMonsters.models.MonsterModel;
+
+import java.text.DecimalFormat;
 
 public class MonsterDamageEvent implements Listener {
 
     MonsterManager monsterManager;
+    HologramManager hologramManager;
+    VectorGenerator vectorGenerator;
+    ZoneMonsters plugin;
 
-    public MonsterDamageEvent(MonsterManager monsterManager) {
+    public MonsterDamageEvent(MonsterManager monsterManager, HologramManager hologramManager, VectorGenerator vectorGenerator, ZoneMonsters plugin) {
         this.monsterManager = monsterManager;
+        this.hologramManager = hologramManager;
+        this.vectorGenerator = vectorGenerator;
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -60,9 +73,18 @@ public class MonsterDamageEvent implements Listener {
             return;
         }
 
+        if(EnchantAPI.getInstance().hasEnchant(item, "forcabrutal")) {
+            int level = EnchantAPI.getInstance().getEnchantLevel(item, "forcabrutal");
+            double finaldamage = event.getDamage() * Math.pow(level, 1.5);
+            event.setDamage(finaldamage);
+        }
+
         int currentHealth = entityData.get(monsterManager.getBOSS_HEALTH_KEY(), PersistentDataType.INTEGER);
         int newHealth = (int) (currentHealth - event.getDamage());
         lifeMessage(newHealth, barraProgresso(newHealth, monster.getHealth()), (int) event.getDamage(), player);
+
+        CreateHologramTask createHologramTask = new CreateHologramTask(plugin, vectorGenerator, event, hologramManager);
+        createHologramTask.run();
 
         if(newHealth <= 0) {
             handleBossDeath(entity, entityData, player, monster);
@@ -88,21 +110,19 @@ public class MonsterDamageEvent implements Listener {
             monsterManager.deliveryRewards(player, monster);
         }
     }
-
     public void killMessage(String type, Player player) {
         TextComponent message = new TextComponent();
         message.setText("§fMatou! §eBoss§l " + type);
         message.setColor(ChatColor.of("#D45D67"));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, message);
     }
-
     public void lifeMessage(int currentHealth, String progresso, int damage, Player player) {
         TextComponent message = new TextComponent();
-        message.setText(currentHealth + "❤ " + progresso + " §7-" + (int) damage + "HP");
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        message.setText(formatter.format(currentHealth) + "❤ " + progresso + " §7-" + (int) damage + "HP");
         message.setColor(ChatColor.of("#D45D67"));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, message);
     }
-
     public String barraProgresso(int xp, int necessario) {
 
         int barrasPreenchidas;

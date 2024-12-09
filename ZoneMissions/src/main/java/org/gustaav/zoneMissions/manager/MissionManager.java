@@ -27,41 +27,51 @@ public class MissionManager {
         this.missionCreator = zoneMissions.getMissionCreator();
     }
     public boolean checkComplete(PlayerModel playerModel) {
+        if(playerModel.getStatus().equalsIgnoreCase("completo")) {
+            return true;
+        }
         MissionModel currentMission = playerModel.getMission();
         for(TaskModel taskModel : currentMission.getTasks()) {
             int value = playerModel.getTaskProgress().get(taskModel);
             if(value < taskModel.getAmount()) {
-                // caso o valor seja menor que o necessário, ele retorna falso
                 return false;
             }
         }
-        // caso todos valores sejam maiores, ou iguais, ele retorna verdadeiro
         return true;
-
     }
+
+    // proxima missão caso tenha
     public void nextMission(PlayerModel playerModel, Player player) {
         MissionModel currentMission = playerModel.getMission();
         int index = missionCreator.getMissions().indexOf(currentMission);
-        MissionModel nextMission = missionCreator.getMissions().get(index + 1);
-        setMission(playerModel, nextMission, player);
-        MessageUtil.sendFormattedMessage(player,
-                String.format("<b><green>WOW!</b> <green>Você completou a missão '<white>%s</white>', suas recompensas foram entregues!", currentMission.getName()));
+        // entrega a recompensa apenas 1 vez
+        if(playerModel.getStatus().equalsIgnoreCase("progresso")) {
+            MessageUtil.sendFormattedMessage(player,
+                    String.format("<b><green>WOW!</b> <green>Você completou a missão '<white>%s</white>', suas recompensas foram entregues!", currentMission.getName()));
 
-        for(RewardModel rewardModel : currentMission.getRewards()) {
-            String toExecute = rewardModel.getCommandToExecute().replaceAll("%player%", player.getName());
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), toExecute);
+            for(RewardModel rewardModel : currentMission.getRewards()) {
+                String toExecute = rewardModel.getCommandToExecute().replaceAll("%player%", player.getName());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), toExecute);
+            }
+            playerModel.setStatus("completo");
         }
-
+        if (index + 1 < missionCreator.getMissions().size()) { // Corrigido de <= para <
+            MissionModel nextMission = missionCreator.getMissions().get(index + 1);
+            setMission(playerModel, nextMission, player);
+        }
     }
+
     public void resetAccount(PlayerModel playerModel, Player player) {
         setMission(playerModel, missionCreator.getMissions().getFirst(), player);
     }
+
     public void setMission(PlayerModel playerModel, MissionModel mission, Player player) {
         playerModel.setMission(mission);
         playerModel.getTaskProgress().clear();
         for(TaskModel task : mission.getTasks()) {
             playerModel.getTaskProgress().put(task, 0);
         }
+        playerModel.setStatus("progresso");
         sendStartMissionMessage(player, mission);
     }
 

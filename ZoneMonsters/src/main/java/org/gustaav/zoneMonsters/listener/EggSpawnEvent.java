@@ -1,6 +1,7 @@
 package org.gustaav.zoneMonsters.listener;
 
 import com.plotsquared.bukkit.util.BukkitUtil;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
@@ -98,13 +99,11 @@ public class EggSpawnEvent implements Listener {
         int stackCount = bossData.getOrDefault(BOSS_STACK_KEY, PersistentDataType.INTEGER, 1) + 1;
         String bossName = bossSettings.getName();
 
-        existingBoss.setCustomName("§e§lx" + stackCount + "§r§e " + bossName);
+        existingBoss.customName(MiniMessage.miniMessage().deserialize(String.format("<gray>[%sx] %s<bold>%s</bold> %s", stackCount, bossSettings.getMonsterType().getColorCode(), bossSettings.getMonsterType().getName(), bossName)));
         bossData.set(BOSS_STACK_KEY, PersistentDataType.INTEGER, stackCount);
 
        decrementEggQuantity(player, item);
     }
-
-
 
     private LivingEntity findNearbyBoss(Player player, Location location) {
         return player.getWorld().getNearbyEntities(location, 2, 2, 2).stream()
@@ -115,12 +114,11 @@ public class EggSpawnEvent implements Listener {
                 .orElse(null);
     }
 
-
     private void spawnNewBoss(Player player, Location location, MonsterModel bossSettings, String bossType, ItemStack item) {
         Location spawnLocation = location.clone().add(0, 1, 0);
         LivingEntity boss = (LivingEntity) player.getWorld().spawnEntity(spawnLocation, bossSettings.getMonsterEntity());
 
-        boss.setCustomName("§e§lx1 §r§e" + bossSettings.getName());
+        boss.customName(MiniMessage.miniMessage().deserialize(String.format("<gray>[1x] %s<bold>%s</bold> %s", bossSettings.getMonsterType().getColorCode(), bossSettings.getMonsterType().getName(), bossSettings.getName())));
         boss.setAI(false);
         boss.setGravity(false);
 

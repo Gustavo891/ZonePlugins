@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.gustaav.zoneMissions.manager.MissionCreator;
 import org.gustaav.zoneMissions.manager.MissionManager;
 import org.gustaav.zoneMissions.models.PlayerModel;
@@ -55,7 +56,6 @@ public class BreakBlockEvent implements Listener {
                     int novoProgresso = progresso + 1;
                     playerModel.getTaskProgress().put(taskModel, novoProgresso);
                     String barraProgresso = MissionCreator.criarBarraProgresso(novoProgresso, taskModel.getAmount());
-
                     if (manager.checkComplete(playerModel)) {
                         manager.nextMission(playerModel, e.getPlayer());
                         return;
@@ -71,6 +71,49 @@ public class BreakBlockEvent implements Listener {
         }
 
 
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        if (e.isCancelled()) return;
+
+        Player p = e.getPlayer();
+        UUID uuid = p.getUniqueId();
+
+        // Obtém o PlayerModel do jogador
+        Optional<PlayerModel> optionalPlayerData = manager.getPlayers().stream()
+                .filter(playerData -> playerData.getUuid().equals(uuid))
+                .findFirst();
+
+        if (optionalPlayerData.isEmpty()) {
+            p.sendMessage("§cJogador não encontrado.");
+            return;
+        }
+
+        PlayerModel playerModel = optionalPlayerData.get();
+        for (Map.Entry<TaskModel, Integer> task : playerModel.getTaskProgress().entrySet()) {
+            TaskModel taskModel = task.getKey();
+            int progresso = task.getValue();
+            if (taskModel.getType() == TaskTypes.PLACE_BLOCKS) {
+                if (progresso >= taskModel.getAmount()) {
+                    continue;
+                }
+                if (taskModel.getMaterial() == null || taskModel.getMaterial() == e.getBlockPlaced().getType()) {
+                    int novoProgresso = progresso + 1;
+                    playerModel.getTaskProgress().put(taskModel, novoProgresso);
+                    String barraProgresso = MissionCreator.criarBarraProgresso(novoProgresso, taskModel.getAmount());
+                    if (manager.checkComplete(playerModel)) {
+                        manager.nextMission(playerModel, e.getPlayer());
+                        return;
+                    }
+                    p.sendActionBar(
+                            Component.text("§e" + taskModel.getDescription() + ": ")
+                                    .append(Component.text("§7" + novoProgresso + "/" + taskModel.getAmount()))
+                                    .append(Component.text(" §2" + barraProgresso))
+                    );
+                }
+            }
+        }
     }
 
 }

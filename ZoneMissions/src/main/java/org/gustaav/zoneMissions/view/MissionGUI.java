@@ -5,6 +5,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.gustaav.zoneMissions.ZoneMissions;
 import org.gustaav.zoneMissions.manager.MissionCreator;
 import org.gustaav.zoneMissions.manager.MissionManager;
 import org.gustaav.zoneMissions.models.MissionModel;
@@ -31,23 +33,46 @@ public class MissionGUI {
     PlayerModel playerModel;
     Player player;
     MissionCreator missionCreator;
+    MissionManager manager;
     MissionModel currentMission;
 
-    public MissionGUI(PlayerModel playerModel, Player player, MissionCreator missionCreator) {
+    public MissionGUI(PlayerModel playerModel, Player player, ZoneMissions zoneMissions) {
         currentMission = playerModel.getMission();
         missionGui = new ChestGui(4, "Missões:");
         this.playerModel = playerModel;
         this.player = player;
-        this.missionCreator = missionCreator;
+        this.missionCreator = zoneMissions.getMissionCreator();
+        this.manager = zoneMissions.getManager();
         PaginatedPane pane = new PaginatedPane(Slot.fromIndex(10), 7, 1);
 
+        StaticPane pane2 = new StaticPane(Slot.fromIndex(27), 9, 1);
+
+        loadLeave(pane2);
         missionGui.setOnGlobalClick(e -> {
             e.setCancelled(true);
         });
 
         loadMission(pane);
         missionGui.addPane(pane);
+        missionGui.addPane(pane2);
         missionGui.show(player);
+
+    }
+
+    private void loadLeave(StaticPane pane) {
+            ItemStack arrowBack = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) arrowBack.getItemMeta();
+            String base64Texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWVjNDlmNGQ1OTUxZTQzMjZiZjM4MTIyOTZlZWE4ZjIwZmIyNzU0YjBhMGZiYWMxN2FiNWI1YTY0NjZiYSJ9fX0=";
+            UUID uuid = UUID.randomUUID();
+            PlayerProfile playerProfile = Bukkit.createProfile(uuid, "");
+            playerProfile.setProperty(new ProfileProperty("textures", base64Texture));
+            meta.setPlayerProfile(playerProfile);
+            meta.displayName(Component.text("§dFechar"));
+            arrowBack.setItemMeta(meta);
+
+            pane.addItem(new GuiItem(arrowBack, e -> {
+                player.getInventory().close();
+            }), Slot.fromIndex(4));
 
     }
 
@@ -59,7 +84,11 @@ public class MissionGUI {
 
             //carregar atual
             if(missionModel == currentMission) {
-                items.add(loadCurrent());
+                if(manager.checkComplete(playerModel)) {
+                    items.add(loadComplete(currentMission));
+                } else {
+                    items.add(loadCurrent());
+                }
             } else if(missionCreator.getMissions().indexOf(missionModel) < missionCreator.getMissions().indexOf(currentMission)) {
                 items.add(loadComplete(missionModel));
             } else {

@@ -17,4 +17,5 @@ public class PlayerModel {
     UUID uuid;
     MissionModel mission;
     Map<TaskModel, Integer> taskProgress = new HashMap<TaskModel, Integer>();
+    String status;
 }

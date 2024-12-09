@@ -29,7 +29,7 @@ public class MongoManager {
         String host = config.getString("mongodb.host");
         String server = config.getString("mongodb.database");
 
-        String uri = "mongodb://" + usuario + ":" + password + "@" + host;
+        String uri = "mongodb+srv://" + usuario + ":" + password + "@" + host;
         MongoClientURI clientUri = new MongoClientURI(uri);
 
         mongoClient = new MongoClient(clientUri);

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.gustaav.zoneMonsters.manager.MonsterCreator;
 import org.gustaav.zoneMonsters.manager.MonsterManager;
 import org.gustaav.zoneMonsters.models.MonsterModel;
 import revxrsal.commands.annotation.Command;
@@ -42,16 +43,18 @@ public class MonsterCommand {
     }
 
     @Command("monster <jogador> <tipo> <quantidade>")
-    public void monsterCommand(CommandSender sender, @Named("jogador") Player jogador,@Named("tipo") @Suggest("profundo") String tipo,@Named("quantidade") Integer quantidade) {
-
-
+    public void monsterCommand(
+            CommandSender sender,
+            @Named("jogador") Player jogador,
+            @Suggest({"saqueador", "mumia", "guardiaodopatano", "brutos", "hoglin", "devastador"}) @Named("tipo") String tipo,
+            @Named("quantidade") Integer quantidade)
+    {
         for(MonsterModel monster : monsterManager.getMonsters()) {
             if (monster.getId().equalsIgnoreCase(tipo)) {
                 ItemStack egg = monsterManager.giveMonster(monster, quantidade);
                 jogador.getInventory().addItem(egg);
             }
         }
-
 
     }
 

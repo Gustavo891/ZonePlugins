@@ -33,7 +33,7 @@ public class MissionCommand {
 
         if (optionalPlayerData.isPresent()) {
             PlayerModel playerData = optionalPlayerData.get();
-            MissionGUI missionGUI = new MissionGUI(playerData, player, zoneMissions.getMissionCreator());
+            MissionGUI missionGUI = new MissionGUI(playerData, player, zoneMissions);
         } else {
             player.sendMessage("§cJogador não encontrado.");
         }

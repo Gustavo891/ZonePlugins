@@ -2,12 +2,21 @@ package org.gustaav.zoneEconomy.commands;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Transformation;
+import org.gustaav.zoneEconomy.ZoneEconomy;
 import org.gustaav.zoneEconomy.manager.EconomyManager;
 import org.gustaav.zoneEconomy.model.PlayerModel;
+import org.joml.AxisAngle4f;
+import org.joml.Vector3f;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -17,10 +26,11 @@ import static org.gustaav.zoneEconomy.utils.utils.mainColor;
 @Command("money")
 public class MoneyCommand {
 
+
+    NamespacedKey key;
     EconomyManager economyManager;
-    public MoneyCommand(EconomyManager economyManager) {
-        this.economyManager = economyManager;
-    }
+    public MoneyCommand(EconomyManager economyManager, ZoneEconomy zoneEconomy) {
+        this.economyManager = economyManager;}
 
     @Command("money")
     public void showBalance(CommandSender sender) {
@@ -65,7 +75,6 @@ public class MoneyCommand {
         sender.sendMessage(ChatColor.of(mainColor) + "Saldo de §f" + target.getName() + ChatColor.of(mainColor) + ": §2$§f" + format(balance));
     }
 
-
     @Command({"money pay <jogador> <quantidade>"})
     public void enviar(CommandSender sender, @Named("jogador") Player target, @Named("quantidade") double value) {
         if (!(sender instanceof Player player)) {
@@ -109,6 +118,64 @@ public class MoneyCommand {
 
     }
 
+    @CommandPermission("zoneeconomy.top.UPDATE")
+    @Command("money top update")
+    public void updateTop(CommandSender sender) {
+        economyManager.setMoneyTop();
+        sender.sendMessage("§aO money top foi atualizado com sucesso.");
+
+    }
+
+
+
+    @CommandPermission("zoneeconomy.top.display")
+    @Command("money top display <value>")
+    public void topDisplay(CommandSender sender, @Named("value") float value) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cApenas jogadores podem usar este comando.");
+            return;
+        }
+
+        BlockFace face = player.getFacing().getOppositeFace();
+        Block targetBlock = player.getTargetBlockExact(10);
+        assert targetBlock != null;
+        Location loc = targetBlock.getLocation().clone().setDirection(face.getDirection());
+        player.sendMessage("§aface: " + face);
+        switch (face) {
+            case SOUTH:
+                loc.add(0, 0, 1.05);
+                break;
+            case NORTH:
+                loc.add(0, 0, -0.05);
+                break;
+            case EAST:
+                loc.add(1.02, 0, -2.48);
+                break;
+            case WEST:
+                loc.add(-0.05, 0, 0);
+                break;
+            case UP:
+                loc.add(0.5, 1.0, 0.5);
+                break;
+            case DOWN:
+                loc.add(0.5, -1.0, 0.5);
+                break;
+        }
+
+        TextDisplay display = (TextDisplay) loc.getWorld().spawn(loc, TextDisplay.class);
+        Transformation transformation =
+                new Transformation(
+                        new Vector3f(0),
+                        new AxisAngle4f(0, 0, 0, 0),
+                        new Vector3f(value, value, value),
+                        new AxisAngle4f(0, 0, 0, 0));
+
+        display.setTransformation(transformation);
+        display.getPersistentDataContainer().set(economyManager.getKey(), PersistentDataType.STRING, "display");
+        economyManager.loadTopDisplay(display);
+
+    }
+
     @CommandPermission("zoneeconomy.admin")
     @Command("money set <jogador> <quantidade>")
     public void setMoney(CommandSender sender, @Named("jogador") Player target, @Named("quantidade") Double value) {
@@ -126,7 +193,6 @@ public class MoneyCommand {
         economyManager.setBalance(target, value);
         sender.sendMessage(ChatColor.of(mainColor) + "Você definiu o saldo de §f" + target.getName() + ChatColor.of(mainColor) + " para §2$§f" + format(value));
     }
-
 
     @Command("money remove <jogador> <quantidade>")
     @CommandPermission("zoneeconomy.admin")
@@ -153,10 +219,7 @@ public class MoneyCommand {
     @Command({"money add <jogador> <quantidade> <flag>"})
     @CommandPermission("zoneeconomy.admin")
     public void add(CommandSender sender, @Named("jogador") Player target, @Named("quantidade") double value, @Optional @Named("flag") String flag) {
-        boolean console = false;
-        if(flag != null && flag.equalsIgnoreCase("-c")) {
-            console = true;
-        }
+        boolean console = flag != null && flag.equalsIgnoreCase("-c");
 
         if(target == null || !target.isOnline() ) {
             if(!console) {

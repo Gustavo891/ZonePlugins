@@ -5,8 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.gustaav.zoneEssential.gui.locations.MinesGUI;
+import org.gustaav.zoneEssential.gui.locations.WarpsGUI;
 import org.gustaav.zoneEssential.manager.LocationManager;
 import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import static org.gustaav.zoneEssential.utils.MessageUtil.sendFormattedMessage;
@@ -21,13 +23,26 @@ public class LocationCommand {
         this.locationManager = locationManager;
     }
 
-    @Command("warp <local>")
-    public void warp(CommandSender sender, String local) {
-        local = local.toLowerCase();
+    @Command("warps")
+    public void warps(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Apenas jogadores podem usar este comando.");
             return;
         }
+        openWarpsMenu(player);
+    }
+
+    @Command("warp <local>")
+    public void warp(CommandSender sender, @Optional String local) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Apenas jogadores podem usar este comando.");
+            return;
+        }
+        if(local == null) {
+            openWarpsMenu(player);
+            return;
+        }
+        local = local.toLowerCase();
         Location warpLocation = locationManager.getWarpLocation(local);
         if (warpLocation != null) {
             if(!player.hasPermission("zoneessential.warp." + local.toLowerCase())) {
@@ -40,6 +55,10 @@ public class LocationCommand {
             sendFormattedMessage(player, String.format("${Colors.RED}O local '${Colors.WHITE}%s${Colors.RED}' não existe.", local));
         }
 
+    }
+
+    public void openWarpsMenu(Player player) {
+        WarpsGUI warpsGUI = new WarpsGUI(player);
     }
 
     @CommandPermission("zoneessential.admin")

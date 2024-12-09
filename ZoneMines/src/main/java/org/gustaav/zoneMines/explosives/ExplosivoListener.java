@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.gustaav.zoneMines.ZoneMines;
 import org.gustaav.zoneMines.modules.SellModel;
 import org.gustaav.zoneMines.modules.SellModule;
-import org.gustaav.zoneMines.managers.LapisManager;
+import org.gustaav.zoneMines.managers.classic.LapisManager;
 import org.gustaav.zoneMines.utils.MessageUtil;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;

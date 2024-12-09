@@ -6,7 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class ArmazemSoldEvent extends Event {
+public class ArmazemEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
@@ -14,7 +14,7 @@ public class ArmazemSoldEvent extends Event {
     private final int amount;
     private final double price;
 
-    public ArmazemSoldEvent(Player player, Material material, int amount, double price) {
+    public ArmazemEvent(Player player, Material material, int amount, double price) {
         this.player = player;
         this.material = material;
         this.amount = amount;
@@ -22,8 +22,13 @@ public class ArmazemSoldEvent extends Event {
     }
 
     @NotNull
+
     @Override
     public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 

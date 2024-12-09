@@ -1,34 +1,23 @@
 package org.gustaav.zoneEnchants.commands;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-import org.checkerframework.checker.units.qual.N;
 import org.gustaav.zoneEnchants.enchantment.CustomEnchants.CustomManager;
 import org.gustaav.zoneEnchants.enchantment.EnchantConfig;
-import org.gustaav.zoneEnchants.enchantment.EnchantModel;
-import org.gustaav.zoneEnchants.enchantment.EnchantTypes;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Suggest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GiveBookCommand {
 
+    EnchantConfig enchantConfig;
     CustomManager customManager;
-    public GiveBookCommand(CustomManager customManager) {
+    public GiveBookCommand(CustomManager customManager, EnchantConfig enchantConfig) {
         this.customManager = customManager;
+        this.enchantConfig = enchantConfig;
     }
 
     @Command("givebook <player> <tipo> <nivel> <flag>")
@@ -38,7 +27,7 @@ public class GiveBookCommand {
                          @Named("nivel") int nivel,
                          @Optional @Named("flag") String flag) {
 
-        ItemStack livro = EnchantConfig.giveBook(tipo, nivel);
+        ItemStack livro = enchantConfig.giveBook(tipo, nivel);
         boolean console = false;
         if(flag != null && flag.equalsIgnoreCase("-c")) {
             console = true;

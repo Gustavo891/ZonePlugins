@@ -4,6 +4,7 @@ import com.plotsquared.bukkit.util.BukkitUtil;
 import com.plotsquared.core.PlotSquared;
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.PlotArea;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.gustaav.zoneArmazem.ZoneArmazem;
@@ -17,7 +18,11 @@ import java.util.Map;
 public class Base {
 
     Manager manager;
+    @Getter
+    int nivelLimite = 6;
+    double baseValue = 500000;
 
+    @Getter
     List<DropModel> drops = List.of(
             new DropModel(Material.MELON_SLICE, "Melancia", 9),
             new DropModel(Material.CARROT, "Cenoura", 25),
@@ -30,10 +35,6 @@ public class Base {
 
     public Base(ZoneArmazem zoneArmazem) {
         manager = zoneArmazem.getManager();
-    }
-
-    public List<DropModel> getDrops() {
-        return drops;
     }
 
     public Plot getPlot(Location loc) {
@@ -59,6 +60,10 @@ public class Base {
             case 5 -> 25000;
             default -> 40000; // maior que 5 retorna 40k
         };
+    }
+
+    public double getValue(int nivel) {
+        return baseValue * Math.pow(2.5, nivel);
     }
 
     public int getTotal(WarehouseModel warehouseModel) {

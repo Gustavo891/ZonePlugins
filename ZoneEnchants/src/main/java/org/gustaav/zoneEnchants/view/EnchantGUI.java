@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.gustaav.zoneEnchants.commands.EnchantCommand;
 import org.gustaav.zoneEnchants.commands.GiveBookCommand;
 import org.gustaav.zoneEnchants.enchantment.EnchantConfig;
 import org.gustaav.zoneEnchants.enchantment.Experience;
@@ -38,13 +39,18 @@ public class EnchantGUI {
     int custoRaro = 800;
     int custoMistico = 2000;
 
+    EnchantConfig enchantConfig;
     ChestGui enchantGui;
     Player player;
     String categoria = null;
 
-    public EnchantGUI(Player player) {
+    public EnchantGUI(Player player, EnchantConfig enchantConfig) {
         this.player = player;
+        this.enchantConfig = enchantConfig;
 
+    }
+
+    public void loadGui() {
         enchantGui = new ChestGui(5, "Mesa de encantamento:");
 
         enchantGui.setOnGlobalClick(e -> {
@@ -64,13 +70,12 @@ public class EnchantGUI {
         enchantGui.addPane(pane);
         enchantGui.addPane(encantar);
         enchantGui.show(player);
-
     }
 
     public void loadFerramentas(StaticPane pane) {
         ItemStack item = new ItemStack(Material.NETHERITE_PICKAXE);
         ItemMeta meta = item.getItemMeta();
-        Component component = MiniMessage.miniMessage().deserialize("<#993DAA>Ferramentas")
+        Component component = MiniMessage.miniMessage().deserialize("<#52FF0F>Ferramentas")
                 .decoration(TextDecoration.ITALIC, false);
         meta.displayName(component);
         List<Component> lore = new ArrayList<>();
@@ -86,7 +91,7 @@ public class EnchantGUI {
             meta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             lore.add(Component.text("§8Categoria já selecionada."));
         } else {
-            lore.add(Component.text("§dClique para seleciona-la."));
+            lore.add(Component.text("§aClique para seleciona-la."));
         }
         meta.lore(lore);
 
@@ -112,7 +117,7 @@ public class EnchantGUI {
     public void loadArmaduras(StaticPane pane) {
         ItemStack item = new ItemStack(Material.NETHERITE_CHESTPLATE);
         ItemMeta meta = item.getItemMeta();
-        Component component = MiniMessage.miniMessage().deserialize("<#993DAA>Armaduras")
+        Component component = MiniMessage.miniMessage().deserialize("<#52FF0F>Armaduras")
                 .decoration(TextDecoration.ITALIC, false);
         meta.displayName(component);
         List<Component> lore = new ArrayList<>();
@@ -129,7 +134,7 @@ public class EnchantGUI {
             meta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             lore.add(Component.text("§8Categoria já selecionada."));
         } else {
-            lore.add(Component.text("§dClique para seleciona-la."));
+            lore.add(Component.text("§aClique para seleciona-la."));
         }
         meta.lore(lore);
 
@@ -157,7 +162,7 @@ public class EnchantGUI {
     public void loadArmamentos(StaticPane pane) {
         ItemStack item = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta meta = item.getItemMeta();
-        Component component = MiniMessage.miniMessage().deserialize("<#993DAA>Armamentos")
+        Component component = MiniMessage.miniMessage().deserialize("<#52FF0F>Armamentos")
                 .decoration(TextDecoration.ITALIC, false);
         meta.displayName(component);
         List<Component> lore = new ArrayList<>();
@@ -171,7 +176,7 @@ public class EnchantGUI {
             lore.add(Component.text("§8Categoria já selecionada."));
             meta.addEnchant(Enchantment.EFFICIENCY, 1, true);
         } else {
-            lore.add(Component.text("§dClique para seleciona-la."));
+            lore.add(Component.text("§aClique para seleciona-la."));
         }
         meta.lore(lore);
 
@@ -203,7 +208,7 @@ public class EnchantGUI {
         playerProfile.setProperty(new ProfileProperty("textures", base64Texture));
         meta.setPlayerProfile(playerProfile);
 
-        Component component = MiniMessage.miniMessage().deserialize("<#AA549F>Encantamentos")
+        Component component = MiniMessage.miniMessage().deserialize("<#4EFF03>Encantamentos")
                 .decoration(TextDecoration.ITALIC, false);
         meta.displayName(component);
         List<Component> lore = new ArrayList<>();
@@ -212,7 +217,10 @@ public class EnchantGUI {
         meta.lore(lore);
         item.setItemMeta(meta);
 
-        pane.addItem(new GuiItem(item), Slot.fromIndex(1));
+        pane.addItem(new GuiItem(item, e -> {
+            EnchantmentList enchantmentList = new EnchantmentList(enchantConfig, player, this);
+            enchantmentList.loadGui();
+        }), Slot.fromIndex(1));
     }
 
     public void pacoteComum(StaticPane pane) {
@@ -231,7 +239,7 @@ public class EnchantGUI {
         } else {
             item = new ItemStack(Material.BOOK);
             ItemMeta meta = item.getItemMeta();
-            Component component = MiniMessage.miniMessage().deserialize("<color:#ff85fb>Pacote Comum</color>    ")
+            Component component = MiniMessage.miniMessage().deserialize("<color:#9CFF90>Pacote Comum</color>    ")
                     .decoration(TextDecoration.ITALIC, false);
             meta.displayName(component);
             List<Component> lore = new ArrayList<>();
@@ -240,7 +248,7 @@ public class EnchantGUI {
             lore.add(Component.text(String.format("§f  Custo: §7%s XP", custoComum)));
             lore.add(Component.text("§r"));
             if(Experience.getExp(player) >= custoComum) {
-                lore.add(Component.text("§dClique para adquirir esse pacote."));
+                lore.add(Component.text("§aClique para adquirir esse pacote."));
             } else {
                 lore.add(Component.text("§cVocê não tem experiência suficiente"));
             }
@@ -279,7 +287,7 @@ public class EnchantGUI {
         } else {
             item = new ItemStack(Material.ENCHANTED_BOOK);
             ItemMeta meta = item.getItemMeta();
-            Component component = MiniMessage.miniMessage().deserialize("<color:#ff85fb>Pacote Raro</color>    ")
+            Component component = MiniMessage.miniMessage().deserialize("<color:#9CFF90>Pacote Raro</color>    ")
                     .decoration(TextDecoration.ITALIC, false);
             meta.displayName(component);
             List<Component> lore = new ArrayList<>();
@@ -288,7 +296,7 @@ public class EnchantGUI {
             lore.add(Component.text(String.format("§f  Custo: §7%s XP", custoRaro)));
             lore.add(Component.text("§r"));
             if(Experience.getExp(player) >= custoRaro) {
-                lore.add(Component.text("§dClique para adquirir esse pacote."));
+                lore.add(Component.text("§aClique para adquirir esse pacote."));
             } else {
                 lore.add(Component.text("§cVocê não tem experiência suficiente"));
             }
@@ -327,7 +335,7 @@ public class EnchantGUI {
         } else {
             item = new ItemStack(Material.BOOKSHELF);
             ItemMeta meta = item.getItemMeta();
-            Component component = MiniMessage.miniMessage().deserialize("<color:#ff85fb>Pacote Místico</color>    ")
+            Component component = MiniMessage.miniMessage().deserialize("<color:#9CFF90>Pacote Místico</color>    ")
                     .decoration(TextDecoration.ITALIC, false);
             meta.displayName(component);
             List<Component> lore = new ArrayList<>();
@@ -336,7 +344,7 @@ public class EnchantGUI {
             lore.add(Component.text(String.format("§f  Custo: §7%s XP", custoMistico)));
             lore.add(Component.text("§r"));
             if(Experience.getExp(player) >= custoMistico) {
-                lore.add(Component.text("§dClique para adquirir esse pacote."));
+                lore.add(Component.text("§aClique para adquirir esse pacote."));
             } else {
                 lore.add(Component.text("§cVocê não tem experiência suficiente"));
             }
@@ -388,7 +396,7 @@ public class EnchantGUI {
         String tipo = escolhido[0];
         String nivel = escolhido[1];
 
-        ItemStack livro = EnchantConfig.giveBook(tipo, Integer.parseInt(nivel));
+        ItemStack livro = enchantConfig.giveBook(tipo, Integer.parseInt(nivel));
         if (livro != null) {
             player.getInventory().addItem(livro);
             MessageUtil.sendFormattedMessage(player, String.format(
@@ -405,7 +413,7 @@ public class EnchantGUI {
                         {"eficiencia", "2"}, {"eficiencia", "3"}, {"Durabilidade", "2"}, {"Fortuna", "1"}, {"Fortuna", "2"}
                 };
                 case "mistico" -> new String[][]{
-                        {"eficiencia", "4"}, {"eficiencia", "5"}, {"Durabilidade", "3"}, {"Fortuna", "2"}, {"Fortuna", "3"}, {"Durabilidade", "2"}
+                        {"eficiencia", "4"}, {"eficiencia", "5"}, {"Durabilidade", "3"}, {"Fortuna", "2"}, {"Fortuna", "3"}, {"Durabilidade", "2"}, {"toque_suave", "1"}
                 };
                 default -> new String[][]{{"Durabilidade", "1"}};
             };

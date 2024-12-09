@@ -1,7 +1,8 @@
 package org.gustaav.zoneEconomy.database;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
@@ -34,12 +35,16 @@ public class MongoManager {
         String host = config.getString("mongodb.host");
         String server = config.getString("mongodb.database");
 
-        String uri = "mongodb://" + usuario + ":" + password + "@" + host;
-        MongoClientURI clientUri = new MongoClientURI(uri);
+        if (usuario == null || password == null || host == null || server == null) {
+            throw new IllegalStateException("Missing MongoDB configuration in database.yml!");
+        }
 
-        mongoClient = new MongoClient(clientUri);
+        String uri = "mongodb+srv://" + usuario + ":" + password + "@" + host + "/" + server + "?retryWrites=true&w=majority";
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new com.mongodb.ConnectionString(uri))
+                .build();
 
-        assert server != null;
+        mongoClient = MongoClients.create(settings);
         MongoDatabase database = mongoClient.getDatabase(server);
 
         collection = database.getCollection("economy");
@@ -56,14 +61,18 @@ public class MongoManager {
     }
 
     public PlayerModel getPlayerModel(UUID uuid) {
-        Document filter = new Document("uuid", uuid.toString());
-        Document playerData = collection.find(filter).first();
-        if (playerData != null) {
-
-            return new PlayerModel(uuid, playerData.getDouble("money"));
+        try {
+            Document filter = new Document("uuid", uuid.toString());
+            Document playerData = collection.find(filter).first();
+            if (playerData != null) {
+                return new PlayerModel(uuid, playerData.getDouble("money"));
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Error fetching player data: " + e.getMessage());
         }
-        return null;
+        return null; // Retorna null se algo falhar
     }
+
 
     public void savePlayerRank(PlayerModel player) {
         Document filter = new Document("uuid", player.getUuid().toString());

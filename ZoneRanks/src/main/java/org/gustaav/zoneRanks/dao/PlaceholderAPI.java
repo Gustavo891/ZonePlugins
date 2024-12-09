@@ -35,8 +35,14 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         }
 
         return switch (params) {
-            case "prefix" -> rankManager.getPlayerRank(player.getUniqueId()).prefix();
-            case "progresso" -> rankManager.getProgresso(player.getUniqueId());
+            case "prefix" -> {
+                var rank = rankManager.getPlayerRank(player.getUniqueId());
+                yield (rank != null && rank.prefix() != null) ? rank.prefix() : "Sem Rank";
+            }
+            case "progresso" -> {
+                var progresso = rankManager.getProgresso(player.getUniqueId());
+                yield (progresso != null) ? progresso : "0%";
+            }
             default -> null;
         };
     }

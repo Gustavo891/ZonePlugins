@@ -3,6 +3,7 @@ package org.gustaav.zoneArmazem.warehouse.dao;
 import com.plotsquared.core.PlotSquared;
 import com.plotsquared.core.plot.PlotArea;
 import com.plotsquared.core.plot.PlotId;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.gustaav.zoneArmazem.warehouse.PlotManager.Base;
 import org.gustaav.zoneArmazem.warehouse.models.WarehouseModel;
@@ -13,14 +14,11 @@ import java.util.List;
 public class Manager {
 
     private Base base;
+    @Getter
     private final List<WarehouseModel> armazens = new ArrayList<>();
 
     public Manager(Base base) {
         this.base = base;
-    }
-
-    public List<WarehouseModel> getArmazens() {
-        return armazens;
     }
 
     public void setArmazens(List<WarehouseModel> armazens) {

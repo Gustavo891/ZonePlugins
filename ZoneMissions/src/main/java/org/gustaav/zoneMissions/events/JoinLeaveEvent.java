@@ -23,6 +23,10 @@ public class JoinLeaveEvent implements Listener {
         Player player = event.getPlayer();
         PlayerModel model = plugin.getMongoManager().loadPlayerModel(player);
         plugin.getManager().getPlayers().add(model);
+
+        if(plugin.getManager().checkComplete(model)) {
+            plugin.getManager().nextMission(model, player);
+        }
     }
 
     @EventHandler

@@ -20,7 +20,22 @@ public class EnchantAPI {
     }
 
     public boolean hasEnchant(ItemStack item, String id) {
-        return false;
+        if (item == null || !item.hasItemMeta()) {
+            return false;
+        }
+        PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+        switch (id) {
+            case "explosivo":
+                if(container.has(customManager.getExplosiveKey(),PersistentDataType.INTEGER)) {
+                    return true;
+                }
+            case "forcabrutal":
+                if(container.has(customManager.getForcabrutal(),PersistentDataType.INTEGER)) {
+                    return true;
+                }
+            default:
+                return false;
+        }
     }
 
     public int getEnchantLevel(ItemStack item, String id) {
@@ -28,13 +43,18 @@ public class EnchantAPI {
             return -1;
         }
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-        if (id.equals("explosivo")) {
-            if (container.has(customManager.getExplosiveKey(), PersistentDataType.INTEGER)) {
-                return container.get(customManager.getExplosiveKey(), PersistentDataType.INTEGER);
-            }
-            return -1;
+        switch (id) {
+            case "explosivo":
+                if(container.has(customManager.getExplosiveKey(),PersistentDataType.INTEGER)) {
+                    return container.get(customManager.getExplosiveKey(), PersistentDataType.INTEGER);
+                }
+            case "forcabrutal":
+                if(container.has(customManager.getForcabrutal(),PersistentDataType.INTEGER)) {
+                    return container.get(customManager.getForcabrutal(), PersistentDataType.INTEGER);
+                }
+            default:
+                return -1;
         }
-        return -1;
     }
 
 }

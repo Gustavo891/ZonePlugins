@@ -39,7 +39,7 @@ public class MongoManager {
         String server = config.getString("mongodb.database");
         String collectionString = config.getString("mongodb.collection");
 
-        String uri = "mongodb://" + usuario + ":" + password + "@" + host;
+        String uri = "mongodb+srv://" + usuario + ":" + password + "@" + host;
         MongoClientURI clientUri = new MongoClientURI(uri);
 
         mongoClient = new MongoClient(clientUri);
@@ -62,6 +62,7 @@ public class MongoManager {
             savePlayerModel(playerModel);
         }
     }
+
     private void createDatabaseFile() {
         // Método para criar o arquivo de configuração para o MongoDB
         File locaisFile = new File(plugin.getDataFolder(), "database.yml");
@@ -71,10 +72,12 @@ public class MongoManager {
         }
         config = YamlConfiguration.loadConfiguration(locaisFile);
     }
+
     public void savePlayerModel(PlayerModel playerModel) {
         Document document = new Document()
                 .append("uuid", playerModel.getUuid().toString())
                 .append("mission", playerModel.getMission().getId())
+                .append("status", playerModel.getStatus())
                 .append("tasks", saveTasks(playerModel.getTaskProgress()));
 
         collection.replaceOne(
@@ -83,6 +86,7 @@ public class MongoManager {
                 new com.mongodb.client.model.ReplaceOptions().upsert(true)
         );
     }
+
     public PlayerModel loadPlayerModel(Player player) {
         UUID uuid = player.getUniqueId();
         Document document = collection.find(Filters.eq("uuid", uuid.toString())).first();
@@ -93,7 +97,7 @@ public class MongoManager {
                 map.put(task, 0);
             }
             manager.sendStartMissionMessage(player, missionModel);
-            return new PlayerModel(uuid, missionModel, map);
+            return new PlayerModel(uuid, missionModel, map, "progresso");
         }
 
         Optional<MissionModel> optionalPlayerData = plugin.getMissionCreator().getMissions().stream()
@@ -101,8 +105,9 @@ public class MongoManager {
                 .findFirst();
         MissionModel missionModel = optionalPlayerData.orElse(plugin.getMissionCreator().getMission01());
 
-        return new PlayerModel(uuid, missionModel, loadTasks(document.get("tasks", Document.class), missionModel));
+        return new PlayerModel(uuid, missionModel, loadTasks(document.get("tasks", Document.class), missionModel), document.getString("status"));
     }
+
     private Document saveTasks(Map<TaskModel, Integer> tasks) {
         Document tasksDocument = new Document();
         for (Map.Entry<TaskModel, Integer> entry : tasks.entrySet()) {

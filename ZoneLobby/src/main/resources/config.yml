@@ -1,0 +1,18 @@
+spawn:
+  world: world
+  x: 0
+  y: 0
+  z: 0
+  yaw: 0
+  pitch: 0
+servers:
+  rankup:
+    display-name: 'RankUP Origins'
+    proxy-name: 'rankup'
+    max-players: '300'
+    ip: ''
+    port: 
+    options:
+      maintenance: false
+      deployment: false
+      beta-vip: false
