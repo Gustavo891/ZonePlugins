@@ -1,29 +1,34 @@
 package org.gustaav.zoneMines;
 
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.gustaav.zoneBoosters.BoosterAPI;
-import org.gustaav.zoneEnchants.EnchantAPI;
 import org.gustaav.zoneMines.Listener.MinesListener;
 import org.gustaav.zoneMines.commands.MineCommand;
 import org.gustaav.zoneMines.commands.Sell.AutoSellCommand;
 import org.gustaav.zoneMines.commands.Sell.SellCommand;
+import org.gustaav.zoneMines.managers.classic.ClassicGuardian;
 import org.gustaav.zoneMines.modules.SellModule;
 import org.gustaav.zoneMines.commands.compact.CompactCommand;
 import org.gustaav.zoneMines.commands.Explosivo;
-import org.gustaav.zoneMines.explosives.ExplosivoListener;
+import org.gustaav.zoneMines.Listener.ExplosivoListener;
 import org.gustaav.zoneMines.managers.classic.LapisManager;
 import org.gustaav.zoneMines.managers.PlaceholderAPI;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 
+@Getter
 public final class ZoneMines extends JavaPlugin {
 
     LapisManager lapisManager;
     SellModule sellModule;
     private static Economy econ = null;
+
+    @Getter
+    NamespacedKey dropIdentifier;
 
     @Override
     public void onEnable() {
@@ -33,8 +38,7 @@ public final class ZoneMines extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-
+        dropIdentifier = new NamespacedKey(this, "dropIdentifier");
         sellModule = new SellModule(this);
         lapisManager = new LapisManager(this, sellModule);
         getServer().getPluginManager().registerEvents(lapisManager, this);
@@ -51,6 +55,7 @@ public final class ZoneMines extends JavaPlugin {
         lamp.register(new SellCommand(sellModule));
         lamp.register(new AutoSellCommand(sellModule));
         lamp.register(new MineCommand(lapisManager));
+
     }
 
     public ZoneMines getZoneMines() {

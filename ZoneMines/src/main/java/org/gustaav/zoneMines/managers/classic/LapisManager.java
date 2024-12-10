@@ -1,5 +1,6 @@
 package org.gustaav.zoneMines.managers.classic;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -14,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -44,9 +46,9 @@ public class LapisManager implements Listener {
     Location spawnMine;
     private TextDisplay textDisplay;
 
-    ClassicSell classicSell;
+    SellModule sellModule;
+    ClassicGuardian classicGuardian;
 
-    NamespacedKey dropIdentifier;
     ItemStack drop = new ItemStack(Material.COPPER_INGOT);
     Material mineBlock = Material.ORANGE_TERRACOTTA;
 
@@ -56,14 +58,15 @@ public class LapisManager implements Listener {
 
     public LapisManager(ZoneMines zoneMines, SellModule sellModule) {
         this.zoneMines = zoneMines;
+        this.sellModule = sellModule;
         this.spawnMine = new Location(Bukkit.getWorld("minas"), 107.5, 86, 69.5);
         this.DisplayNamespace = new NamespacedKey(zoneMines, "textdisplay");
-        this.dropIdentifier = new NamespacedKey(zoneMines, "dropidentifier");
         this.classica = new Cuboid(
                 new Location(Bukkit.getWorld("minas"), 46, 83, 92),
                 new Location(Bukkit.getWorld("minas"), 92, 57, 46));
         loadDrop(drop);
-        this.classicSell = new ClassicSell(zoneMines);
+        this.classicGuardian = new ClassicGuardian(zoneMines);
+        zoneMines.getServer().getPluginManager().registerEvents(classicGuardian, zoneMines);
     }
 
     public void loadDrop(ItemStack drop) {
@@ -76,7 +79,7 @@ public class LapisManager implements Listener {
         lore.add(Component.text("§8Venda-o no guardião da mina."));
         meta.lore(lore);
 
-        meta.getPersistentDataContainer().set(dropIdentifier, PersistentDataType.STRING, "cobre");
+        meta.getPersistentDataContainer().set(zoneMines.getDropIdentifier(), PersistentDataType.STRING, "cobre_1");
 
         drop.setItemMeta(meta);
     }
@@ -167,23 +170,25 @@ public class LapisManager implements Listener {
 
     @EventHandler
     public void remove(PluginEnableEvent event) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (World world : Bukkit.getWorlds()) {
-                    for (Entity entity : world.getEntities()) {
-                        if (entity instanceof TextDisplay) {
-                            if (entity.getPersistentDataContainer().has(DisplayNamespace, PersistentDataType.BOOLEAN)) {
-                                entity.remove();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                        for(World world : Bukkit.getWorlds()) {
+                            for (Entity entity : world.getEntities()) {
+                                if (entity instanceof TextDisplay) {
+                                    if (entity.getPersistentDataContainer().has(DisplayNamespace, PersistentDataType.BOOLEAN)) {
+                                        entity.remove();
+                                    }
+                                }
                             }
                         }
-                    }
+
+                    createTextDisplay();
+                    startResetTimer();
+                    reset();
                 }
-                createTextDisplay();
-                startResetTimer();
-                reset();
-            }
-        }.runTaskLater(zoneMines, 60);
+            }.runTaskLater(zoneMines, 60);
+
     }
 
     @EventHandler
@@ -231,9 +236,15 @@ public class LapisManager implements Listener {
                             }
                         }
                         ItemStack drops = drop.clone();
-                        int fortuneMultiplier = (fortune > 0) ? rand.nextInt(1, fortune+2) : 1;
-                        drops.setAmount(multiplier * fortuneMultiplier * totalBlocos);
-                        player.getInventory().addItem(drops);
+                        int fortuneMultiplier = (fortune > 0) ? rand.nextInt(1, fortune + 2) : 1;
+                        int totalAmount = multiplier * fortuneMultiplier * totalBlocos;
+
+                        while (totalAmount > 0) {
+                            ItemStack stack = drops.clone();
+                            stack.setAmount(Math.min(totalAmount, 64));
+                            totalAmount -= stack.getAmount();
+                            player.getInventory().addItem(stack);
+                        }
                         location.getWorld().spawnParticle(Particle.EXPLOSION, location, radius);
                         location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0F, 1.0F);
                         MessageUtil.sendFormattedMessage(player, String.format(
@@ -241,10 +252,16 @@ public class LapisManager implements Listener {
                                 , SellModule.format(totalBlocos)));
                     }
                 }
-                int fortuneMultiplier = (fortune > 0) ? rand.nextInt(1, fortune+2) : 1;
+                int fortuneMultiplier = (fortune > 0) ? rand.nextInt(1, fortune + 2) : 1;
                 ItemStack drops = drop.clone();
-                drops.setAmount(multiplier * fortuneMultiplier);
-                player.getInventory().addItem(drops);
+                int totalAmount = multiplier * fortuneMultiplier;
+
+                while (totalAmount > 0) {
+                    ItemStack stack = drops.clone();
+                    stack.setAmount(Math.min(totalAmount, 64));
+                    totalAmount -= stack.getAmount();
+                    player.getInventory().addItem(stack);
+                }
 
                 e.setCancelled(false);
                 player.giveExp(e.getExpToDrop());

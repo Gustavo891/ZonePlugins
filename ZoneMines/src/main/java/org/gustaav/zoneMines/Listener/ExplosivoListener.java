@@ -1,4 +1,4 @@
-package org.gustaav.zoneMines.explosives;
+package org.gustaav.zoneMines.Listener;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;

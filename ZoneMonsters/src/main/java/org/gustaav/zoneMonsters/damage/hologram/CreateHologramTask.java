@@ -1,5 +1,6 @@
 package org.gustaav.zoneMonsters.damage.hologram;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -43,7 +44,7 @@ public class CreateHologramTask implements Runnable {
 
         // Calcula a nova posição da ArmorStand
         Location hologramLocation = victim.getLocation().clone().add(offsetX, 0, offsetZ);
-
+        hologramLocation.setY(victim.getBoundingBox().getCenterY());
 
         ArmorStand hologram = victim.getWorld().spawn(hologramLocation, ArmorStand.class, stand -> {
                     stand.setVisible(false);
@@ -58,7 +59,7 @@ public class CreateHologramTask implements Runnable {
                     stand.setLeftLegPose(EulerAngle.ZERO.add(180, 0, 0));
                     stand.setRightLegPose(EulerAngle.ZERO.add(180, 0, 0));
                     stand.setInvulnerable(true);
-                    Vector velocity = new Vector(0, 0.4, 0); // Sobe a 0.5 blocos por tick
+                    Vector velocity = new Vector(0, 0.5, 0); // Sobe a 0.5 blocos por tick
                     stand.setVelocity(velocity);
         });
         hologramManager.addHologram(hologram);
@@ -83,8 +84,6 @@ public class CreateHologramTask implements Runnable {
 
         hologram.setCustomNameVisible(true);
         hologram.setCustomName(customName);
-
-        //victim.getWorld().spawnParticle(Particle.HEART, victim.getLocation().add(0, 2.5,0), 1);
 
         CleanupHologramTask cleanupTask = new CleanupHologramTask(hologram, hologramManager);
         cleanupTask.runTaskLater(plugin, 10);

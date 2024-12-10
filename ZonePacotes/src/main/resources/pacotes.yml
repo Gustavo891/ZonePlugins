@@ -1,0 +1,53 @@
+pacotes:
+  pacote1:
+    displayName: "Pacote Lendário"
+    lore:
+      - "Um pacote raro com recompensas poderosas!"
+      - "Abra e descubra o que está dentro."
+    head: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU3YzNhZjQ3YjYwOWE3YTI1NTI2Y2ZlYWFlNWFjNDRiMWM2YmI3MDgyNzM5MmI0MTcyZDI3MWQyZjU4M2I0OCJ9fX0="  # Caso seja uma cabeça de jogador em base64
+    colorCode: "#FFD700"  # Cor do pacote (Dourado para este exemplo)
+    rewards:
+      recompensa1:
+        displayName: "Espada Lendária"
+        lore:
+          - "Uma espada com poder imenso."
+          - "Use-a com sabedoria."
+        material: "DIAMOND_SWORD"
+        head: ""  # Não há cabeça de jogador para essa recompensa
+        weight: 10
+        rarity: "RARO"
+        command: "give %player_name% diamond_sword"
+      recompensa2:
+        displayName: "Bloco de Ouro"
+        lore:
+          - "Um bloco valioso para sua coleção."
+        material: "GOLD_BLOCK"
+        head: ""  # Não há cabeça de jogador para essa recompensa
+        weight: 5
+        rarity: "INCOMUM"
+        command: "give %player_name% gold_block"
+  pacote2:
+    displayName: "Pacote Comum"
+    lore:
+      - "Pacote simples, mas útil."
+    head: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU3YzNhZjQ3YjYwOWE3YTI1NTI2Y2ZlYWFlNWFjNDRiMWM2YmI3MDgyNzM5MmI0MTcyZDI3MWQyZjU4M2I0OCJ9fX0="  # Caso seja uma cabeça de jogador em base64
+    colorCode: "#A9A9A9"  # Cor do pacote (Cinza para este exemplo)
+    rewards:
+      recompensa1:
+        displayName: "Pá de Ferro"
+        lore:
+          - "Uma pá simples de ferro."
+        material: "IRON_SHOVEL"
+        head: ""
+        weight: 1
+        rarity: "NORMAL"
+        command: "give %player_name% iron_shovel"
+      recompensa2:
+        displayName: "Bloco de Carvão"
+        lore:
+          - "Essencial para suas aventuras!"
+        material: "COAL_BLOCK"
+        head: ""
+        weight: 3
+        rarity: "NORMAL"
+        command: "give %player_name% coal_block"

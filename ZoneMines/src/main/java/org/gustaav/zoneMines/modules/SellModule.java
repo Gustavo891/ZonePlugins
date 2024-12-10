@@ -1,9 +1,12 @@
 package org.gustaav.zoneMines.modules;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.gustaav.zoneMines.ZoneMines;
 import org.gustaav.zoneMines.utils.MessageUtil;
@@ -13,8 +16,15 @@ import java.util.stream.Collectors;
 
 public class SellModule {
 
+    List<ProductModel> items = List.of(
+            new ProductModel("cobre_1", "Fragmentos de Cobre", 5)
+    );
+
     ZoneMines plugin;
+    @Setter
+    @Getter
     private List<UUID> autoSellList = new ArrayList<UUID>();
+    @Getter
     private final List<SellModel> sellList = List.of(
             new SellModel(new ItemStack(Material.LAPIS_LAZULI), "Lapis-Lazuli", 2),
             new SellModel(new ItemStack(Material.LAPIS_ORE), "Minérios de Lapis-Lazuli", 30),
@@ -29,18 +39,6 @@ public class SellModule {
         autoSell();
     }
 
-    public List<SellModel> getSellList() {
-        return sellList;
-    }
-
-    public List<UUID> getAutoSellList() {
-        return autoSellList;
-    }
-
-    public void setAutoSellList(List<UUID> autoSellList) {
-        this.autoSellList = autoSellList;
-    }
-
     public static String format(double amount) {
         if (amount < 1000) {
             return String.format("%.0f", amount);
@@ -53,6 +51,30 @@ public class SellModule {
         } else {
             return String.format("%.2fT", amount / 1_000_000_000_000L);
         }
+    }
+
+    public boolean sell(Player player, ItemStack item) {
+
+        if(item.getItemMeta().getPersistentDataContainer().has(plugin.getDropIdentifier())) {
+            String type = item.getItemMeta().getPersistentDataContainer().get(plugin.getDropIdentifier(), PersistentDataType.STRING);
+            switch (type) {
+                case "cobre_1":
+                    int amount = item.getAmount();
+                    Optional<ProductModel> productModel = items.stream().filter(produto -> produto.identifier().equalsIgnoreCase(type)).findAny();
+                    if (productModel.isPresent()) {
+                        ProductModel produto = productModel.get();
+                        double lucro = produto.value() * amount;
+                        ZoneMines.getEconomy().depositPlayer(player, lucro);
+                        player.sendMessage(String.format("§aVocê vendeu §7x%s §f%s §apor um total de §2$§f%s§a.", amount, produto.translation(), format(lucro)));
+                        return true;
+                    } else {
+                        return false;
+                    }
+                case null, default:
+                    return false;
+            }
+        }
+        return false;
     }
 
     public boolean sellItems(Player player, int index, List<ItemStack> items) {
